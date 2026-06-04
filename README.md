@@ -1,3 +1,9 @@
+
+Set-ExecutionPolicy Unrestricted -Scope Process
+
+## 📂 Project Structure
+
+```
 justicia-frontend/
 │
 ├── src/
@@ -25,5 +31,4 @@ justicia-frontend/
 │   └── main.jsx             # Punto de entrada de React
 ├── package.json
 └── tailwind.config.js       # Configuración de colores y diseño
-
-Set-ExecutionPolicy Unrestricted -Scope Process
+```
