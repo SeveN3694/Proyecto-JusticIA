@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, FileText, Brain, CheckCircle, Send, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logoJusticia from '../../assets/JusticIA.png';
 
 export default function AbogadoDashboard() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function AbogadoDashboard() {
       {/* SIDEBAR */}
       <div className="w-16 flex flex-col items-center justify-between py-6 bg-legal-panel border-r border-legal-border">
         <div className="flex flex-col items-center space-y-8">
-          <div className="text-gold-primary font-black text-xl tracking-tighter">J<span>.</span></div>
+          <img src={logoJusticia} className="w-8 h-8 object-contain" alt="JusticIA Logo" />
           <button className="p-3 bg-neutral-900 border border-gold-primary/20 rounded-xl text-gold-primary">
             <Brain className="w-5 h-5" />
           </button>

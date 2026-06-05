@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, FileCheck, Layers, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logoJusticia from '../../assets/JusticIA.png';
 
 export default function ClientePortal() {
   const navigate = useNavigate();
@@ -9,9 +10,15 @@ export default function ClientePortal() {
     <div className="min-h-screen bg-legal-dark text-neutral-200">
       
       {/* HEADER DE PORTAL */}
-      <header className="bg-legal-panel border-b border-legal-border px-8 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <span className="text-transparent bg-clip-text bg-gold-gradient font-black text-lg tracking-wider">JUSTICIA</span>
+      <header className="bg-legal-panel border-b border-legal-border px-8 py-4 flex justify-between items-center shadow-lg">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+            <img src={logoJusticia} alt="JusticIA Logo" className="w-7 h-7 object-contain filter drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]" />
+            <span className="text-lg font-black tracking-widest flex items-baseline">
+              <span className="text-transparent bg-clip-text bg-gold-gradient">JUSTIC</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-primary drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] ml-[1px]">IA</span>
+            </span>
+          </div>
           <span className="text-neutral-600">|</span>
           <span className="text-xs uppercase tracking-widest text-neutral-400">Portal de Clientes</span>
         </div>
