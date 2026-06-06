@@ -1,126 +1,218 @@
-import React, { useState } from 'react';
-import { Search, FileText, Brain, CheckCircle, Send, LogOut } from 'lucide-react';
+import React from 'react';
+import { Search, FolderOpen, Sparkles, Database, Clock, ArrowRight, Briefcase, Activity, FileText, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logoJusticia from '../../assets/JusticIA.png';
 
-export default function AbogadoDashboard() {
+export default function Dashboard() {
   const navigate = useNavigate();
-  const [viabilidad, setViabilidad] = useState(78);
-  const [textoEstrategia, setTextoEstrategia] = useState('');
 
   return (
-    <div className="flex h-screen bg-legal-dark text-neutral-200 overflow-hidden">
-      
-      {/* SIDEBAR */}
-      <div className="w-16 flex flex-col items-center justify-between py-6 bg-legal-panel border-r border-legal-border">
-        <div className="flex flex-col items-center space-y-8">
-          <img src={logoJusticia} className="w-8 h-8 object-contain" alt="JusticIA Logo" />
-          <button className="p-3 bg-neutral-900 border border-gold-primary/20 rounded-xl text-gold-primary">
-            <Brain className="w-5 h-5" />
-          </button>
-          <button className="p-3 text-neutral-500 hover:text-neutral-200 transition-colors">
-            <FileText className="w-5 h-5" />
-          </button>
-        </div>
-        <button onClick={() => navigate('/login')} className="p-3 text-neutral-500 hover:text-red-400 transition-colors">
-          <LogOut className="w-5 h-5" />
-        </button>
-      </div>
+    <div className="p-8 pb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 font-sans text-neutral-200">
+      <div className="max-w-7xl mx-auto">
 
-      {/* CONTENIDO PRINCIPAL: SPLIT SCREEN */}
-      <div className="flex-grow flex">
-        
-        {/* PANEL IZQUIERDO: Búsqueda y Jurisprudencia (pgvector) */}
-        <div className="w-1/2 p-6 flex flex-col border-r border-legal-border bg-gradient-to-b from-neutral-950 to-legal-dark overflow-y-auto">
-          <div className="mb-6">
-            <h1 className="text-xl font-bold tracking-wide mb-1 text-white">Análisis & Jurisprudencia</h1>
-            <p className="text-xs text-neutral-400 uppercase tracking-wider">Motor de consulta cognitiva</p>
+        {/* HEADER & WELCOME */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-6">
+          <div className="relative">
+            <div className="absolute -left-4 top-2 w-1 h-12 bg-gold-primary rounded-r-full shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
+            <h1 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-400 mb-2">
+              Bienvenido, <span className="text-gold-primary">Dr. Martin</span>
+            </h1>
+            <p className="text-sm text-neutral-500 font-medium tracking-widest uppercase">Resumen Ejecutivo • Lunes, 5 de Junio</p>
           </div>
 
-          {/* Buscador Universal */}
-          <div className="relative mb-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-            <input 
-              type="text"
-              placeholder="Buscar por similitud fáctica o palabras clave..."
-              className="w-full bg-legal-panel border border-legal-border rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-gold-primary/50"
-            />
-          </div>
-
-          {/* Caso Activo Contextual */}
-          <div className="bg-legal-panel border border-legal-border p-4 rounded-xl mb-6">
-            <span className="text-[10px] bg-gold-primary/10 text-gold-primary border border-gold-primary/20 px-2 py-0.5 rounded uppercase font-bold tracking-wider">
-              Caso Activo
-            </span>
-            <h3 className="text-sm font-semibold text-white mt-2 mb-1">Expediente #2026-Civil</h3>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Demanda de indemnización por daños y perjuicios derivados de responsabilidad extracontractual. El demandado alega ruptura del nexo causal.
-            </p>
-          </div>
-
-          {/* Resultados de la Base de Conocimiento */}
-          <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-3 flex items-center gap-2">
-            <Brain className="w-3.5 h-3.5 text-gold-primary" /> Precedentes Relevantes (pgvector)
-          </h3>
-          <div className="space-y-3">
-            <div className="p-4 bg-legal-panel/60 border border-legal-border hover:border-gold-primary/30 rounded-xl transition-all cursor-pointer group">
-              <div className="flex justify-between items-start">
-                <h4 className="text-sm font-medium text-white group-hover:text-gold-primary transition-colors">Casación N° 4412-2024 Lima</h4>
-                <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono">94% Coincidencia</span>
+          <div className="flex items-center gap-4 bg-legal-panel/80 border border-white/10 p-2.5 pr-6 rounded-full backdrop-blur-md shadow-2xl">
+            <div className="w-10 h-10 rounded-full bg-gold-gradient p-[1px] relative group cursor-pointer">
+              <div className="absolute inset-0 bg-gold-primary/50 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-full h-full rounded-full bg-black flex items-center justify-center relative z-10">
+                <User className="w-5 h-5 text-gold-primary" />
               </div>
-              <p className="text-xs text-neutral-400 mt-2 line-clamp-2">
-                Criterios jurisprudenciales sobre la cuantificación del daño moral en contratos comerciales concurrentes...
-              </p>
             </div>
-
-            <div className="p-4 bg-legal-panel/60 border border-legal-border hover:border-gold-primary/30 rounded-xl transition-all cursor-pointer group">
-              <div className="flex justify-between items-start">
-                <h4 className="text-sm font-medium text-white group-hover:text-gold-primary transition-colors">Sentencia Tribunal Constitucional 012-2023</h4>
-                <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono">87% Coincidencia</span>
-              </div>
-              <p className="text-xs text-neutral-400 mt-2 line-clamp-2">
-                Delimitación del debido proceso en la incorporación de pruebas extemporáneas documentales...
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* PANEL DERECHO: Redactor de Estrategia */}
-        <div className="w-1/2 p-6 flex flex-col bg-legal-panel">
-          <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-xl font-bold tracking-wide text-white">Estrategia & Predictibilidad</h2>
-              <p className="text-xs text-neutral-400 uppercase tracking-wider">Generación del informe base</p>
+              <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mb-0.5">Estado del Sistema</p>
+              <p className="text-xs font-bold text-green-400 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]" /> RAG & Neon en Línea
+              </p>
             </div>
+          </div>
+        </div>
 
-            {/* Medidor de Viabilidad de Éxito */}
-            <div className="flex items-center gap-3 bg-neutral-950 border border-legal-border px-4 py-2 rounded-xl">
-              <span className="text-xs text-neutral-400 font-medium">Viabilidad:</span>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-base font-mono font-bold text-emerald-400">{viabilidad}%</span>
+        {/* QUICK STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Stat 1 */}
+          <div className="bg-gradient-to-br from-legal-panel to-[#050505] border border-white/5 p-6 rounded-3xl shadow-xl relative overflow-hidden group hover:border-gold-primary/30 transition-colors duration-500">
+            <div className="absolute inset-0 bg-gold-primary/5 translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-out" />
+            <div className="flex justify-between items-center relative z-10">
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-widest font-bold mb-1">Casos Activos</p>
+                <h3 className="text-4xl font-extrabold text-white tracking-tight">124</h3>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-gold-primary/10 flex items-center justify-center border border-gold-primary/20 group-hover:scale-110 transition-transform duration-500">
+                <Briefcase className="w-7 h-7 text-gold-primary" />
               </div>
             </div>
           </div>
 
-          {/* Área de Redacción */}
-          <div className="flex-grow flex flex-col mb-4">
-            <textarea 
-              className="w-full flex-grow bg-neutral-950/40 border border-legal-border rounded-xl p-4 text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-gold-primary/40 resize-none font-sans leading-relaxed"
-              placeholder="Escribe la teoría del caso, fundamentos de derecho y la propuesta de defensa en base a los precedentes indexados..."
-              value={textoEstrategia}
-              onChange={(e) => setTextoEstrategia(e.target.value)}
-            />
+          {/* Stat 2 */}
+          <div className="bg-gradient-to-br from-legal-panel to-[#050505] border border-white/5 p-6 rounded-3xl shadow-xl relative overflow-hidden group hover:border-emerald-500/30 transition-colors duration-500">
+            <div className="absolute inset-0 bg-emerald-500/5 translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-out" />
+            <div className="flex justify-between items-center relative z-10">
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-widest font-bold mb-1">Precisión IA (RAG)</p>
+                <h3 className="text-4xl font-extrabold text-white tracking-tight">94.2<span className="text-2xl text-emerald-500">%</span></h3>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform duration-500">
+                <Activity className="w-7 h-7 text-emerald-500" />
+              </div>
+            </div>
           </div>
 
-          {/* Barra de Acciones */}
-          <div className="flex justify-end gap-3">
-            <button className="px-5 py-2.5 border border-legal-border rounded-xl text-xs font-semibold text-neutral-400 hover:bg-neutral-900 transition-colors">
-              Guardar Progreso
-            </button>
-            <button className="px-5 py-2.5 bg-gold-gradient text-black rounded-xl text-xs font-bold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg shadow-gold-primary/5">
-              <Send className="w-3.5 h-3.5" /> Enviar a Revisión de Socio
-            </button>
+          {/* Stat 3 */}
+          <div className="bg-gradient-to-br from-legal-panel to-[#050505] border border-white/5 p-6 rounded-3xl shadow-xl relative overflow-hidden group hover:border-blue-500/30 transition-colors duration-500">
+            <div className="absolute inset-0 bg-blue-500/5 translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-out" />
+            <div className="flex justify-between items-center relative z-10">
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-widest font-bold mb-1">Vectores (Neon DB)</p>
+                <h3 className="text-4xl font-extrabold text-white tracking-tight">14.2<span className="text-2xl text-blue-500">K</span></h3>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform duration-500">
+                <FileText className="w-7 h-7 text-blue-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MÓDULOS PRINCIPALES */}
+        <h2 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-6 ml-2">Módulos del Sistema</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+
+          {/* Tarjeta Nuevo Caso */}
+          <div
+            onClick={() => navigate('/ingreso-caso')}
+            className="relative bg-[#0a0a0a] border border-white/5 hover:border-purple-500/50 p-8 rounded-[2rem] cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(168,85,247,0.2)] group flex flex-col overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 border border-purple-500/20 group-hover:bg-purple-500/20 transition-colors relative z-10">
+              <FolderOpen className="w-7 h-7 text-purple-400 group-hover:scale-110 transition-transform duration-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 relative z-10">Apertura de Caso</h3>
+            <p className="text-sm text-neutral-400 mb-6 line-clamp-3 flex-grow font-light leading-relaxed relative z-10">
+              Ingresa un nuevo expediente legal, define la sumilla y vincula los documentos iniciales al sistema.
+            </p>
+            <div className="flex items-center text-xs font-bold uppercase tracking-widest text-purple-400 group-hover:gap-3 transition-all relative z-10">
+              Nuevo Registro <ArrowRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+
+          {/* Tarjeta IA */}
+          <div
+            onClick={() => navigate('/estrategia-legal')}
+            className="relative bg-[#0a0a0a] border border-white/5 hover:border-gold-primary/50 p-8 rounded-[2rem] cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(212,175,55,0.2)] group flex flex-col overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-gold-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+            <div className="w-14 h-14 rounded-2xl bg-gold-primary/10 flex items-center justify-center mb-6 border border-gold-primary/20 group-hover:bg-gold-primary/20 transition-colors relative z-10">
+              <Sparkles className="w-7 h-7 text-gold-primary group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 relative z-10">CoCounsel IA</h3>
+            <p className="text-sm text-neutral-400 mb-6 line-clamp-3 flex-grow font-light leading-relaxed relative z-10">
+              Genera estrategias automatizadas analizando los hechos cruzados con jurisprudencia vectorial.
+            </p>
+            <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gold-primary group-hover:gap-3 transition-all relative z-10">
+              Abrir Asistente <ArrowRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+
+          {/* Tarjeta Casos */}
+          <div
+            onClick={() => navigate('/directorio-casos')}
+            className="relative bg-[#0a0a0a] border border-white/5 hover:border-blue-500/50 p-8 rounded-[2rem] cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.2)] group flex flex-col overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors relative z-10">
+              <FolderOpen className="w-7 h-7 text-blue-400 group-hover:scale-110 transition-transform duration-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 relative z-10">Directorio de Casos</h3>
+            <p className="text-sm text-neutral-400 mb-6 line-clamp-3 flex-grow font-light leading-relaxed relative z-10">
+              Gestiona tus expedientes, actualiza estados y revisa el progreso judicial del despacho.
+            </p>
+            <div className="flex items-center text-xs font-bold uppercase tracking-widest text-blue-400 group-hover:gap-3 transition-all relative z-10">
+              Ver Expedientes <ArrowRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+
+          {/* Tarjeta Indexación */}
+          <div
+            onClick={() => navigate('/digitalizacion')}
+            className="relative bg-[#0a0a0a] border border-white/5 hover:border-emerald-500/50 p-8 rounded-[2rem] cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.2)] group flex flex-col overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6 border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors relative z-10">
+              <Database className="w-7 h-7 text-emerald-400 group-hover:scale-110 transition-transform duration-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 relative z-10">Centro Indexación</h3>
+            <p className="text-sm text-neutral-400 mb-6 line-clamp-3 flex-grow font-light leading-relaxed relative z-10">
+              Sube sentencias en PDF. El sistema extraerá el texto, lo vectorizará y lo guardará en PostgreSQL.
+            </p>
+            <div className="flex items-center text-xs font-bold uppercase tracking-widest text-emerald-400 group-hover:gap-3 transition-all relative z-10">
+              Subir Documentos <ArrowRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+        </div>
+
+        {/* ACTIVIDAD RECIENTE */}
+        <div className="bg-[#050505] border border-white/5 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/[0.02] rounded-full blur-[80px] pointer-events-none" />
+
+          <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-500 mb-8 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-gold-primary" />
+            Flujo de Actividad Reciente
+          </h3>
+
+          <div className="space-y-6 relative z-10">
+            {/* Timeline Line */}
+            <div className="absolute left-[15px] top-2 bottom-2 w-[1px] bg-white/10 z-0" />
+
+            {/* Actividad 1 */}
+            <div className="flex items-start gap-6 group">
+              <div className="relative z-10 w-8 h-8 rounded-full bg-[#0a0a0a] border border-white/10 flex items-center justify-center shrink-0 mt-1 group-hover:border-gold-primary/50 transition-colors">
+                <div className="w-2.5 h-2.5 rounded-full bg-gold-primary shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
+              </div>
+              <div className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl w-full group-hover:bg-white/[0.04] transition-colors">
+                <p className="text-sm font-bold text-white mb-1">Estrategia autogenerada para EXP-2024-001</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-neutral-500 font-medium">Por CoCounsel IA (Gemini 1.5 Pro)</p>
+                  <p className="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">Hace 2 horas</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actividad 2 */}
+            <div className="flex items-start gap-6 group">
+              <div className="relative z-10 w-8 h-8 rounded-full bg-[#0a0a0a] border border-white/10 flex items-center justify-center shrink-0 mt-1 group-hover:border-emerald-500/50 transition-colors">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
+              </div>
+              <div className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl w-full group-hover:bg-white/[0.04] transition-colors">
+                <p className="text-sm font-bold text-white mb-1">3 Documentos nuevos indexados a la base vectorial (Neon)</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-neutral-500 font-medium">Por Admin / OCR Service</p>
+                  <p className="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">Hace 5 horas</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actividad 3 */}
+            <div className="flex items-start gap-6 group">
+              <div className="relative z-10 w-8 h-8 rounded-full bg-[#0a0a0a] border border-white/10 flex items-center justify-center shrink-0 mt-1 group-hover:border-blue-500/50 transition-colors">
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+              </div>
+              <div className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl w-full group-hover:bg-white/[0.04] transition-colors">
+                <p className="text-sm font-bold text-white mb-1">Nuevo caso creado: "Demanda Laboral Ruiz"</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-neutral-500 font-medium">Por Dr. Mendoza</p>
+                  <p className="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">Ayer a las 16:30 hrs</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

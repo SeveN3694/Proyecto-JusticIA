@@ -48,30 +48,14 @@ export default function IngresoCaso() {
   };
 
   return (
-    <div className="relative min-h-screen bg-legal-dark text-neutral-200 p-8 flex justify-center items-center overflow-hidden">
-      {/* Auras doradas dinámicas en movimiento (Usando inline styles para forzar el difuminado) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Aura 1 - Superior Izquierda */}
-        <div className="absolute top-[-15%] left-[-15%] w-[500px] h-[500px] rounded-full bg-gold-primary/20 animate-blob-slow mix-blend-screen" style={{ filter: 'blur(110px)' }} />
-        {/* Aura 2 - Inferior Derecha */}
-        <div className="absolute bottom-[-15%] right-[-15%] w-[600px] h-[600px] rounded-full bg-gold-light/15 animate-blob-medium mix-blend-screen" style={{ filter: 'blur(130px)' }} />
-      </div>
+    <div className="h-full overflow-y-auto text-neutral-200 flex flex-col items-center py-12 px-6 relative animate-in fade-in duration-500">
 
-      {/* Efecto de desvanecimiento en bordes */}
-      <div className="absolute inset-0 bg-gradient-to-t from-legal-dark via-transparent to-legal-dark pointer-events-none z-0" />
 
       <div className="relative z-10 w-full max-w-lg bg-legal-panel/85 border border-legal-border rounded-2xl shadow-2xl p-8 backdrop-blur-md">
         
         {/* Header con botón de regresar */}
         <div className="flex items-center justify-between gap-4 mb-8 border-b border-legal-border pb-6">
           <div className="flex items-center gap-4">
-            <button 
-              type="button"
-              onClick={() => navigate('/abogado/dashboard')}
-              className="p-2.5 bg-neutral-900/80 border border-legal-border hover:border-gold-primary/45 rounded-xl text-neutral-400 hover:text-white transition-all duration-300 group/back"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover/back:-translate-x-0.5 transition-transform" />
-            </button>
             <div>
               <h1 className="text-xl font-bold tracking-wide text-white">Input del Caso Legal</h1>
               <p className="text-xs text-neutral-400 mt-1">Sube los datos básicos del caso y la sumilla para iniciar la automatización.</p>

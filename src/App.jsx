@@ -1,10 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import AbogadoDashboard from './pages/abogado/Dashboard';
-import ClientePortal from './pages/cliente/PortalCliente';
+import Dashboard from './pages/abogado/Dashboard';
 import IngresoCaso from './pages/abogado/IngresoCaso';
-
+import EstrategiaLegal from './pages/abogado/EstrategiaLegal';
+import DirectorioCasos from './pages/abogado/DirectorioCasos';
+import Digitalizacion from './pages/admin/Digitalizacion';
+import PortalCliente from './pages/cliente/PortalCliente';
+import MainLayout from './layouts/MainLayout';
 
 function App() {
   return (
@@ -12,9 +15,21 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/abogado/dashboard" element={<AbogadoDashboard />} />
-        <Route path="/cliente/portal" element={<ClientePortal />} />
-        <Route path="/abogado/ingreso" element={<IngresoCaso />} />
+        
+        {/* Rutas con Sidebar Global (Abogado / Admin) */}
+        <Route element={<MainLayout />}>
+          {/* Módulo Abogado */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/ingreso-caso" element={<IngresoCaso />} />
+          <Route path="/estrategia-legal" element={<EstrategiaLegal />} />
+          <Route path="/directorio-casos" element={<DirectorioCasos />} />
+          
+          {/* Módulo Operativo / Admin */}
+          <Route path="/digitalizacion" element={<Digitalizacion />} />
+        </Route>
+        
+        {/* Módulo Cliente */}
+        <Route path="/portal-cliente" element={<PortalCliente />} />
       </Routes>
     </Router>
   );

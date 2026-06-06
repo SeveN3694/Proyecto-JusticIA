@@ -1,0 +1,225 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Sparkles, Scale, FileText, CheckCircle, AlertTriangle, Loader2, Target, BrainCircuit, Database } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+export default function EstrategiaLegal() {
+  const navigate = useNavigate();
+  const [hechos, setHechos] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [resultado, setResultado] = useState(null);
+
+  const handleGenerate = async () => {
+    if (!hechos.trim()) return;
+    setIsGenerating(true);
+
+    try {
+      setTimeout(() => {
+        setResultado({
+          viabilidad: 82.5,
+          texto_estrategia: "# Análisis Estratégico\n\nBasado en los hechos presentados y la jurisprudencia aplicable, la estrategia recomendada es proceder con una **Demanda de Indemnización por Daños y Perjuicios**.\n\n## Líneas de Investigación\n* Solicitar peritaje de parte para cuantificar el daño emergente.\n* Citar jurisprudencia de la Sala Civil Suprema (Casación N° 1234-2023) sobre responsabilidad extracontractual.\n\n## Riesgos Identificados\n* Posible excepción de prescripción extintiva por parte del demandado.\n\n*Generado por CoCounsel (Gemini 1.5 Pro)*",
+          precedentes: [
+            { archivo: "Casacion_1234_2023.pdf", pagina: 12, similitud: 0.89 },
+            { archivo: "Sentencia_TC_005.pdf", pagina: 3, similitud: 0.75 }
+          ]
+        });
+        setIsGenerating(false);
+      }, 2500);
+    } catch (error) {
+      console.error(error);
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="h-full flex flex-col animate-in fade-in duration-700 bg-black text-neutral-200 font-sans">
+
+      {/* Navbar Superior */}
+      <div className="h-20 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl flex items-center px-8 justify-between shrink-0">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gold-primary/10 border border-gold-primary/20 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-gold-primary" />
+          </div>
+          <div>
+            <h1 className="font-extrabold text-xl text-white tracking-wide">
+              CoCounsel IA <span className="text-gold-primary font-normal">| Estrategia RAG</span>
+            </h1>
+            <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Motor de Inferencia Gemini + pgvector</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Floating Panels Layout */}
+      <div className="flex-1 overflow-hidden p-8 flex flex-col md:flex-row gap-8">
+
+        {/* Panel Izquierdo: Input de Hechos */}
+        <div className="w-full md:w-[40%] flex flex-col bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+          <div className="mb-6 relative z-10 flex-1 flex flex-col">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                <Scale className="w-4 h-4 text-gold-primary" />
+              </div>
+              <h2 className="text-sm font-bold uppercase tracking-widest text-white">
+                Hechos del Caso
+              </h2>
+            </div>
+            <p className="text-xs text-neutral-400 mb-6 font-light leading-relaxed">
+              Describe los hechos. La IA cruzará el texto con la base vectorial corporativa en milisegundos para encontrar precedentes y formular defensas.
+            </p>
+
+            <div className="relative flex-1 flex flex-col">
+              <div className="absolute inset-0 bg-gradient-to-r from-gold-primary/20 to-gold-primary/0 rounded-2xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <textarea
+                value={hechos}
+                onChange={(e) => setHechos(e.target.value)}
+                placeholder="Ej: El cliente suscribió un contrato de arrendamiento el 01/01/2022. El inquilino dejó de pagar hace 6 meses y se niega a desocupar el inmueble..."
+                className="w-full flex-1 bg-[#050505] border border-white/10 rounded-2xl p-6 text-sm text-white focus:outline-none focus:border-gold-primary/50 transition-colors resize-none relative z-10 shadow-inner"
+              />
+            </div>
+          </div>
+
+          <button
+            onClick={handleGenerate}
+            disabled={isGenerating || !hechos.trim()}
+            className="group relative w-full flex items-center justify-center gap-3 bg-gold-gradient text-black font-extrabold py-5 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed z-10 mt-4"
+          >
+            <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin relative z-10" />
+                <span className="relative z-10 tracking-wider">PROCESANDO...</span>
+              </>
+            ) : (
+              <>
+                <BrainCircuit className="w-5 h-5 relative z-10" />
+                <span className="relative z-10 tracking-wider">GENERAR ESTRATEGIA</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Panel Derecho: Resultados */}
+        <div className="w-full md:w-[60%] bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-10 shadow-2xl relative overflow-hidden flex flex-col">
+
+          {/* Decorative glow background */}
+          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-gold-primary/10 rounded-full blur-[120px] pointer-events-none" />
+
+          {isGenerating ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center relative animate-in fade-in zoom-in duration-500">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gold-primary/20 rounded-full blur-3xl animate-pulse" />
+
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="relative w-24 h-24 flex items-center justify-center mb-8">
+                  <div className="absolute inset-0 border-t-2 border-gold-primary rounded-full animate-spin" style={{ animationDuration: '1.5s' }} />
+                  <div className="absolute inset-3 border-r-2 border-white/50 rounded-full animate-[spin_2s_linear_infinite_reverse]" />
+                  <div className="absolute inset-6 border-b-2 border-gold-primary/30 rounded-full animate-[spin_3s_linear_infinite]" />
+                  <BrainCircuit className="w-8 h-8 text-gold-primary animate-pulse" />
+                </div>
+                <h2 className="font-extrabold text-3xl text-transparent bg-clip-text bg-gold-gradient tracking-wide mb-3">
+                  Sintetizando Estrategia...
+                </h2>
+                <div className="flex items-center gap-3 text-xs font-bold text-neutral-400 uppercase tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/10">
+                  <Database className="w-3 h-3 text-gold-primary animate-pulse" />
+                  Cruzando Vectores en Neon DB
+                </div>
+              </div>
+            </div>
+               ) : resultado ? (
+            <div className="flex flex-col h-full animate-in fade-in zoom-in-95 duration-700 relative z-10">
+              
+              {/* Header Reporte */}
+              <div className="flex items-center justify-between pb-6 border-b border-white/5 mb-6 shrink-0">
+                <div className="flex items-center gap-4">
+                   <div className="w-12 h-12 rounded-full bg-gold-primary/10 flex items-center justify-center border border-gold-primary/20 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                     <BrainCircuit className="w-6 h-6 text-gold-primary" />
+                   </div>
+                   <div>
+                     <h3 className="text-xl font-extrabold text-white tracking-wide">Reporte Estratégico</h3>
+                     <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mt-1">Generado en tiempo real • Inteligencia RAG</p>
+                   </div>
+                </div>
+
+                {/* Score Pill */}
+                <div className="flex items-center gap-5 bg-gradient-to-r from-[#111] to-[#0a0a0a] border border-white/10 rounded-full pl-6 pr-2 py-2 shadow-2xl">
+                  <div className="flex flex-col text-right">
+                    <span className="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Viabilidad Estimada</span>
+                    <span className={`text-xl font-extrabold ${resultado.viabilidad >= 70 ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                      {resultado.viabilidad}%
+                    </span>
+                  </div>
+                  <div className="w-[1px] h-8 bg-white/10" />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${resultado.viabilidad >= 70 ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-yellow-500/10 border border-yellow-500/20'}`}>
+                    <Target className={`w-5 h-5 ${resultado.viabilidad >= 70 ? 'text-emerald-400' : 'text-yellow-400'}`} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Body Reporte (Scrollable) */}
+              <div className="flex-1 overflow-y-auto pr-4 flex flex-col gap-8">
+                
+                {/* Texto */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-b from-gold-primary/5 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                  <div className="prose prose-invert prose-gold max-w-none prose-h1:text-2xl prose-h1:font-extrabold prose-h1:tracking-wide prose-h2:text-sm prose-h2:text-gold-primary prose-h2:uppercase prose-h2:tracking-widest prose-h2:font-bold prose-h2:mt-8 prose-li:text-neutral-300 bg-[#050505] p-10 rounded-[2rem] border border-white/5 shadow-inner relative z-10 leading-relaxed">
+                    <div dangerouslySetInnerHTML={{ __html: resultado.texto_estrategia.replace(/\n/g, '<br/>') }} />
+                  </div>
+                </div>
+
+                {/* Jurisprudencia en layout horizontal de cartas de lujo */}
+                <div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-4 flex items-center gap-2 ml-2">
+                    <Database className="w-3 h-3 text-gold-primary" />
+                    Base Jurisprudencial Utilizada (Neon DB)
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {resultado.precedentes.map((prec, i) => (
+                      <div key={i} className="bg-gradient-to-br from-[#111] to-[#050505] border border-white/5 rounded-[1.5rem] p-6 hover:border-gold-primary/40 hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.15)] transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        
+                        <div className="flex items-start justify-between mb-6">
+                           <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-gold-primary/10 group-hover:scale-110 transition-all duration-500">
+                             <FileText className="w-6 h-6 text-neutral-400 group-hover:text-gold-primary transition-colors" />
+                           </div>
+                           <span className="text-[10px] font-bold text-gold-primary bg-gold-primary/10 border border-gold-primary/20 px-3 py-1.5 rounded-full shadow-inner">
+                              {(prec.similitud * 100).toFixed(1)}% Match
+                           </span>
+                        </div>
+                        <div>
+                           <p className="font-extrabold text-sm text-white mb-1.5 truncate group-hover:text-gold-primary transition-colors">{prec.archivo}</p>
+                           <div className="flex items-center gap-2">
+                             <div className="w-1.5 h-1.5 rounded-full bg-neutral-600 group-hover:bg-gold-primary transition-colors" />
+                             <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Página {prec.pagina}</p>
+                           </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-center relative animate-in zoom-in duration-700">
+              {/* Anillos concéntricos de energía */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-gold-primary/10 rounded-full animate-[ping_4s_infinite] opacity-50" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-gold-primary/5 rounded-full animate-[ping_5s_infinite_reverse] opacity-30" />
+
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gold-primary/20 to-black border border-gold-primary/30 flex items-center justify-center mb-8 relative z-10 shadow-[0_0_40px_rgba(212,175,55,0.2)]">
+                <BrainCircuit className="w-10 h-10 text-gold-primary" />
+              </div>
+
+              <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-400 relative z-10 tracking-wide">
+                Esperando Hechos
+              </h2>
+              <p className="text-sm max-w-md mt-4 text-neutral-500 relative z-10 font-light leading-relaxed">
+                Ingresa los hechos del caso en el panel de la izquierda. El motor de inferencia analizará la base de datos en milisegundos para formular la estrategia en tiempo real.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
