@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Upload, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Upload, Send, User, MapPin, Map, FileText, ArrowLeft } from 'lucide-react';
 
 export default function IngresoCaso() {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState("Ningún archivo seleccionado");
 
@@ -23,7 +25,7 @@ export default function IngresoCaso() {
     try {
       // REEMPLAZA ESTA URL CON TU WEBHOOK DE PRODUCCIÓN DE n8n
       const webhookUrl = 'https://jamess7.app.n8n.cloud/webhook-test/8ea64518-ca06-4d46-a579-193d5ff0958b';
-      
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
         body: formData, // n8n procesará esto como multipart/form-data
@@ -45,82 +47,112 @@ export default function IngresoCaso() {
   };
 
   return (
-    <div className="min-h-screen bg-legal-dark text-neutral-200 p-8 flex justify-center items-start">
-      <div className="w-full max-w-2xl bg-legal-panel border border-legal-border rounded-2xl shadow-2xl p-8">
+    <div className="relative min-h-screen bg-legal-dark text-neutral-200 p-8 flex justify-center items-center overflow-hidden">
+      {/* Auras doradas dinámicas en movimiento (Usando inline styles para forzar el difuminado) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Aura 1 - Superior Izquierda */}
+        <div className="absolute top-[-15%] left-[-15%] w-[500px] h-[500px] rounded-full bg-gold-primary/20 animate-blob-slow mix-blend-screen" style={{ filter: 'blur(110px)' }} />
+        {/* Aura 2 - Inferior Derecha */}
+        <div className="absolute bottom-[-15%] right-[-15%] w-[600px] h-[600px] rounded-full bg-gold-light/15 animate-blob-medium mix-blend-screen" style={{ filter: 'blur(130px)' }} />
+      </div>
+
+      {/* Efecto de desvanecimiento en bordes */}
+      <div className="absolute inset-0 bg-gradient-to-t from-legal-dark via-transparent to-legal-dark pointer-events-none z-0" />
+
+      <div className="relative z-10 w-full max-w-lg bg-legal-panel/85 border border-legal-border rounded-2xl shadow-2xl p-8 backdrop-blur-md">
         
-        <div className="mb-8 border-b border-legal-border pb-6">
-          <h1 className="text-2xl font-bold tracking-wide text-white">Input del Caso Legal</h1>
-          <p className="text-sm text-neutral-400 mt-2">Con este formulario el abogado sube al sistema los datos básicos del caso y una sumilla.</p>
+        {/* Header con botón de regresar */}
+        <div className="flex items-center gap-4 mb-8 border-b border-legal-border pb-6">
+          <button 
+            type="button"
+            onClick={() => navigate('/abogado/dashboard')}
+            className="p-2.5 bg-neutral-900/80 border border-legal-border hover:border-gold-primary/45 rounded-xl text-neutral-400 hover:text-white transition-all duration-300 group/back"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover/back:-translate-x-0.5 transition-transform" />
+          </button>
+          <div>
+            <h1 className="text-xl font-bold tracking-wide text-white">Input del Caso Legal</h1>
+            <p className="text-xs text-neutral-400 mt-1">Sube los datos básicos del caso y la sumilla para iniciar la automatización.</p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* Nombre del Cliente */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">Nombre del Cliente</label>
-            <input 
-              type="text" name="nombre_cliente" required
-              className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-gold-primary/70"
-            />
-          </div>
-
-          {/* Domicilio */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">Domicilio</label>
-            <input 
-              type="text" name="domicilio" required
-              className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-gold-primary/70"
-            />
-          </div>
-
-          {/* Distrito y Provincia */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">Distrito y Provincia del demandante</label>
-            <input 
-              type="text" name="distrito_provincia" required
-              className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-gold-primary/70"
-            />
-          </div>
-
-          {/* Sumilla */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">Sumilla</label>
-            <textarea 
-              name="sumilla" required rows="3"
-              className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-gold-primary/70 resize-none"
-            ></textarea>
-          </div>
-
-          {/* Archivo */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">Archivo (Pruebas / Expediente)</label>
-            <div className="relative flex items-center bg-neutral-900/50 border border-legal-border rounded-xl overflow-hidden focus-within:border-gold-primary/70 transition-colors">
+          <div className="group">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2 group-focus-within:text-gold-primary transition-colors">
+              Nombre del Cliente
+            </label>
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 group-focus-within:text-gold-primary transition-colors" />
               <input 
-                type="file" name="archivo" onChange={handleFileChange} required
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                type="text" name="nombre_cliente" required
+                placeholder="Ej. Juan Pérez Maldonado"
+                className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold-primary/70 focus:ring-1 focus:ring-gold-primary/20 transition-all duration-300"
               />
-              <div className="bg-neutral-800 text-neutral-300 px-4 py-3 border-r border-legal-border flex items-center gap-2 text-sm font-medium">
-                <Upload className="w-4 h-4" /> Elegir archivo
-              </div>
-              <div className="px-4 text-sm text-neutral-400 truncate">
-                {fileName}
-              </div>
             </div>
           </div>
 
-          {/* Área Legal */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">Área</label>
-            <div className="space-y-3">
-              {['Derecho Civil', 'Derecho Penal', 'Defensa Consumidor', 'Constitucional'].map((area) => (
-                <label key={area} className="flex items-center gap-3 cursor-pointer group">
-                  <input 
-                    type="radio" name="area_legal" value={area} required
-                    className="w-4 h-4 text-gold-primary bg-neutral-900 border-legal-border focus:ring-gold-primary/50 focus:ring-offset-legal-dark"
-                  />
-                  <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">{area}</span>
-                </label>
-              ))}
+          {/* Domicilio */}
+          <div className="group">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2 group-focus-within:text-gold-primary transition-colors">
+              Domicilio
+            </label>
+            <div className="relative">
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 group-focus-within:text-gold-primary transition-colors" />
+              <input 
+                type="text" name="domicilio" required
+                placeholder="Ej. Av. Larco 123, Dpto. 401"
+                className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold-primary/70 focus:ring-1 focus:ring-gold-primary/20 transition-all duration-300"
+              />
+            </div>
+          </div>
+
+          {/* Distrito y Provincia */}
+          <div className="group">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2 group-focus-within:text-gold-primary transition-colors">
+              Distrito y Provincia del demandante
+            </label>
+            <div className="relative">
+              <Map className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 group-focus-within:text-gold-primary transition-colors" />
+              <input 
+                type="text" name="distrito_provincia" required
+                placeholder="Ej. Miraflores, Lima"
+                className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold-primary/70 focus:ring-1 focus:ring-gold-primary/20 transition-all duration-300"
+              />
+            </div>
+          </div>
+
+          {/* Sumilla */}
+          <div className="group">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2 group-focus-within:text-gold-primary transition-colors">
+              Sumilla
+            </label>
+            <div className="relative">
+              <FileText className="absolute left-4 top-3.5 w-4 h-4 text-neutral-500 group-focus-within:text-gold-primary transition-colors" />
+              <textarea 
+                name="sumilla" required rows="4"
+                placeholder="Escribe un resumen detallado de la pretensión y los hechos principales..."
+                className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-gold-primary/70 focus:ring-1 focus:ring-gold-primary/20 transition-all duration-300 resize-none leading-relaxed"
+              ></textarea>
+            </div>
+          </div>
+
+          {/* Archivo */}
+          <div className="group">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2 group-focus-within:text-gold-primary transition-colors">
+              Archivo (Pruebas / Expediente)
+            </label>
+            <div className="relative flex flex-col items-center justify-center bg-neutral-900/30 border-2 border-dashed border-legal-border rounded-xl p-6 hover:border-gold-primary/50 focus-within:border-gold-primary/50 transition-all duration-300 cursor-pointer overflow-hidden group/upload">
+              <input 
+                type="file" name="archivo" onChange={handleFileChange} required
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+              />
+              <Upload className="w-8 h-8 text-neutral-500 group-hover/upload:text-gold-primary transition-colors mb-2 z-10" />
+              <span className="text-sm font-semibold text-neutral-300 group-hover/upload:text-white transition-colors truncate max-w-full px-4 z-10 text-center">
+                {fileName === "Ningún archivo seleccionado" ? "Hacer clic para subir o arrastrar archivo" : fileName}
+              </span>
+              <span className="text-xs text-neutral-500 mt-1 z-10">Archivos PDF, DOCX, PNG o JPG (Máx. 10MB)</span>
             </div>
           </div>
 
@@ -128,9 +160,9 @@ export default function IngresoCaso() {
           <div className="pt-4 border-t border-legal-border">
             <button 
               type="submit" disabled={isSubmitting}
-              className="w-full flex justify-center items-center gap-2 bg-gold-gradient text-black font-bold py-3 px-4 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full flex justify-center items-center gap-2 bg-gold-gradient text-black font-extrabold py-3.5 px-4 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 tracking-wider shadow-lg shadow-gold-primary/15 uppercase text-xs"
             >
-              {isSubmitting ? 'Enviando...' : <><Send className="w-4 h-4" /> Enviar Caso al Sistema</>}
+              {isSubmitting ? 'Enviando Caso...' : <><Send className="w-3.5 h-3.5" /> Enviar Caso al Sistema</>}
             </button>
           </div>
 

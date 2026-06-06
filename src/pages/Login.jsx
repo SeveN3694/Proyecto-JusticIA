@@ -58,7 +58,7 @@ export default function Login() {
                 type="text"
                 required
                 className="w-full bg-neutral-900/50 border border-legal-border rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-gold-primary/70 transition-colors"
-                placeholder="abogado@estudio.com"
+                placeholder="correo@estudio.com"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
