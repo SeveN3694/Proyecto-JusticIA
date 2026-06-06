@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, Send, User, MapPin, Map, FileText, ArrowLeft } from 'lucide-react';
+import logoJusticia from '../../assets/JusticIA.png';
 
 export default function IngresoCaso() {
   const navigate = useNavigate();
@@ -62,18 +63,25 @@ export default function IngresoCaso() {
       <div className="relative z-10 w-full max-w-lg bg-legal-panel/85 border border-legal-border rounded-2xl shadow-2xl p-8 backdrop-blur-md">
         
         {/* Header con botón de regresar */}
-        <div className="flex items-center gap-4 mb-8 border-b border-legal-border pb-6">
-          <button 
-            type="button"
-            onClick={() => navigate('/abogado/dashboard')}
-            className="p-2.5 bg-neutral-900/80 border border-legal-border hover:border-gold-primary/45 rounded-xl text-neutral-400 hover:text-white transition-all duration-300 group/back"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover/back:-translate-x-0.5 transition-transform" />
-          </button>
-          <div>
-            <h1 className="text-xl font-bold tracking-wide text-white">Input del Caso Legal</h1>
-            <p className="text-xs text-neutral-400 mt-1">Sube los datos básicos del caso y la sumilla para iniciar la automatización.</p>
+        <div className="flex items-center justify-between gap-4 mb-8 border-b border-legal-border pb-6">
+          <div className="flex items-center gap-4">
+            <button 
+              type="button"
+              onClick={() => navigate('/abogado/dashboard')}
+              className="p-2.5 bg-neutral-900/80 border border-legal-border hover:border-gold-primary/45 rounded-xl text-neutral-400 hover:text-white transition-all duration-300 group/back"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover/back:-translate-x-0.5 transition-transform" />
+            </button>
+            <div>
+              <h1 className="text-xl font-bold tracking-wide text-white">Input del Caso Legal</h1>
+              <p className="text-xs text-neutral-400 mt-1">Sube los datos básicos del caso y la sumilla para iniciar la automatización.</p>
+            </div>
           </div>
+          <img 
+            src={logoJusticia} 
+            alt="JusticIA Logo" 
+            className="w-10 h-10 object-contain filter drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] hover:scale-105 transition-transform duration-300 hidden sm:block"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
