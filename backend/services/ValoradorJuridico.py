@@ -8,8 +8,8 @@ load_dotenv()
 class ValoradorJuridico:
     def __init__(self):
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        # Gemini 1.5 Flash es ideal para tareas de razonamiento rápido y RAG
-        self.modelo = genai.GenerativeModel('gemini-1.5-flash')
+        # Usaremos Gemini Flash Latest
+        self.modelo = genai.GenerativeModel('gemini-flash-latest')
         
     def _construir_prompt(self, hechos: str, contexto_legal: list[dict]) -> str:
         """Construye el prompt maestro inyectando los documentos recuperados por RAG"""
@@ -20,7 +20,7 @@ class ValoradorJuridico:
             contexto_str += f"{doc['texto']}\\n"
             
         prompt = f"""
-        Eres 'CoCounsel', un asistente legal experto de la firma Arxatec/JusticIA.
+        Eres "JusticIA", el asistente legal de IA experto de la firma de abogados JusticIA.
         Tu tarea es analizar los hechos de un caso legal y formular una estrategia jurídica sólida
         basada ÚNICAMENTE en la jurisprudencia y documentos de referencia proporcionados.
         
@@ -31,16 +31,15 @@ class ValoradorJuridico:
         {contexto_str if contexto_str else "No se encontraron documentos relevantes."}
         
         INSTRUCCIONES:
-        1. Analiza los hechos frente a la base de conocimiento.
-        2. Redacta una "Estrategia Legal Recomendada" en formato Markdown.
-        3. Identifica "Líneas de Investigación" clave.
-        4. Calcula un porcentaje estimado de viabilidad matemática (0 a 100) basado en qué tan favorables son los precedentes proporcionados para los hechos descritos.
+        1. Analiza los hechos frente a la base de conocimiento local (si existe).
+        2. IMPORTANTE: Si la Base de Conocimiento local está vacía, utiliza tu vasto conocimiento interno del Código Civil, Código Penal del Perú y la jurisprudencia peruana para redactar la estrategia, como un abogado experto.
+        3. Redacta una "Estrategia Legal Recomendada" en formato Markdown.
+        4. Identifica "Líneas de Investigación" clave.
+        5. Calcula un porcentaje estimado de viabilidad matemática (0 a 100) basado en tu análisis legal.
         
-        Responde ESTRICTAMENTE en este formato JSON (sin texto adicional fuera del JSON):
-        {{
-            "texto_estrategia": "# Estrategia Legal\\n... (tu análisis en markdown)...",
-            "viabilidad": 75.5
-        }}
+        Responde DIRECTAMENTE en formato Markdown con tu estrategia.
+        AL FINAL de tu respuesta, en la última línea, debes incluir OBLIGATORIAMENTE el porcentaje de viabilidad en este formato exacto:
+        [VIABILIDAD: 85.5]
         """
         return prompt
 
@@ -51,28 +50,24 @@ class ValoradorJuridico:
         prompt = self._construir_prompt(hechos, contexto_legal)
         
         try:
-            # Generar respuesta
             response = self.modelo.generate_content(prompt)
             texto_respuesta = response.text
             
-            # Limpiar posibles delimitadores de código markdown que el LLM suele agregar (```json)
-            if texto_respuesta.startswith("```json"):
-                texto_respuesta = texto_respuesta[7:]
-            if texto_respuesta.startswith("```"):
-                texto_respuesta = texto_respuesta[3:]
-            if texto_respuesta.endswith("```"):
-                texto_respuesta = texto_respuesta[:-3]
-                
-            # Parsear el JSON
-            try:
-                resultado = json.loads(texto_respuesta.strip())
-                return resultado
-            except json.JSONDecodeError:
-                # Fallback si el LLM no retorna JSON válido
-                return {
-                    "texto_estrategia": texto_respuesta,
-                    "viabilidad": 0.0
-                }
+            import re
+            
+            # Buscar la viabilidad al final del texto
+            match = re.search(r'\[VIABILIDAD:\s*([\d\.]+)\]', texto_respuesta)
+            if match:
+                viabilidad_val = float(match.group(1))
+                texto_estrategia = texto_respuesta[:match.start()].strip()
+            else:
+                viabilidad_val = 0.0
+                texto_estrategia = texto_respuesta.strip()
+
+            return {
+                "texto_estrategia": texto_estrategia,
+                "viabilidad": viabilidad_val
+            }
                 
         except Exception as e:
             print(f"Error generando estrategia con Gemini LLM: {e}")

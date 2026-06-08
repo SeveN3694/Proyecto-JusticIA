@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Sparkles, Scale, FileText, CheckCircle, AlertTriangle, Loader2, Target, BrainCircuit, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 export default function EstrategiaLegal() {
   const navigate = useNavigate();
@@ -13,19 +14,43 @@ export default function EstrategiaLegal() {
     setIsGenerating(true);
 
     try {
-      setTimeout(() => {
-        setResultado({
-          viabilidad: 82.5,
-          texto_estrategia: "# Análisis Estratégico\n\nBasado en los hechos presentados y la jurisprudencia aplicable, la estrategia recomendada es proceder con una **Demanda de Indemnización por Daños y Perjuicios**.\n\n## Líneas de Investigación\n* Solicitar peritaje de parte para cuantificar el daño emergente.\n* Citar jurisprudencia de la Sala Civil Suprema (Casación N° 1234-2023) sobre responsabilidad extracontractual.\n\n## Riesgos Identificados\n* Posible excepción de prescripción extintiva por parte del demandado.\n\n*Generado por CoCounsel (Gemini 1.5 Pro)*",
-          precedentes: [
-            { archivo: "Casacion_1234_2023.pdf", pagina: 12, similitud: 0.89 },
-            { archivo: "Sentencia_TC_005.pdf", pagina: 3, similitud: 0.75 }
-          ]
-        });
-        setIsGenerating(false);
-      }, 2500);
+      // Llamada real al backend FastAPI
+      const response = await fetch('http://localhost:8000/api/ia/estrategia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_caso: 1, // ID temporal para la demo
+          descripcion_hechos: hechos,
+          id_empleado_solicitante: 1 // ID temporal
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la respuesta del servidor');
+      }
+
+      const data = await response.json();
+
+      setResultado({
+        viabilidad: data.porcentaje_viabilidad || 0,
+        texto_estrategia: data.borrador_generado,
+        precedentes: data.precedentes_usados.map(p => ({
+          archivo: p.archivo,
+          pagina: p.pagina,
+          similitud: p.score_similitud
+        }))
+      });
+      setIsGenerating(false);
     } catch (error) {
-      console.error(error);
+      console.error('Error al generar la estrategia:', error);
+      // Fallback visual en caso de que el backend no esté encendido
+      setResultado({
+        viabilidad: 0,
+        texto_estrategia: "# Error de Conexión\n\nNo se pudo conectar con el motor de inferencia (FastAPI). Verifica que el servidor de backend esté corriendo en el puerto 8000.",
+        precedentes: []
+      });
       setIsGenerating(false);
     }
   };
@@ -41,7 +66,7 @@ export default function EstrategiaLegal() {
           </div>
           <div>
             <h1 className="font-extrabold text-xl text-white tracking-wide">
-              CoCounsel IA <span className="text-gold-primary font-normal">| Estrategia RAG</span>
+              Justic IA <span className="text-gold-primary font-normal">| Estrategia RAG</span>
             </h1>
             <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Motor de Inferencia Gemini + pgvector</p>
           </div>
@@ -126,19 +151,19 @@ export default function EstrategiaLegal() {
                 </div>
               </div>
             </div>
-               ) : resultado ? (
+          ) : resultado ? (
             <div className="flex flex-col h-full animate-in fade-in zoom-in-95 duration-700 relative z-10">
-              
+
               {/* Header Reporte */}
               <div className="flex items-center justify-between pb-6 border-b border-white/5 mb-6 shrink-0">
                 <div className="flex items-center gap-4">
-                   <div className="w-12 h-12 rounded-full bg-gold-primary/10 flex items-center justify-center border border-gold-primary/20 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-                     <BrainCircuit className="w-6 h-6 text-gold-primary" />
-                   </div>
-                   <div>
-                     <h3 className="text-xl font-extrabold text-white tracking-wide">Reporte Estratégico</h3>
-                     <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mt-1">Generado en tiempo real • Inteligencia RAG</p>
-                   </div>
+                  <div className="w-12 h-12 rounded-full bg-gold-primary/10 flex items-center justify-center border border-gold-primary/20 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                    <BrainCircuit className="w-6 h-6 text-gold-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-extrabold text-white tracking-wide">Reporte Estratégico</h3>
+                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mt-1">Generado en tiempo real • Inteligencia RAG</p>
+                  </div>
                 </div>
 
                 {/* Score Pill */}
@@ -158,12 +183,12 @@ export default function EstrategiaLegal() {
 
               {/* Body Reporte (Scrollable) */}
               <div className="flex-1 overflow-y-auto pr-4 flex flex-col gap-8">
-                
+
                 {/* Texto */}
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-b from-gold-primary/5 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                  <div className="prose prose-invert prose-gold max-w-none prose-h1:text-2xl prose-h1:font-extrabold prose-h1:tracking-wide prose-h2:text-sm prose-h2:text-gold-primary prose-h2:uppercase prose-h2:tracking-widest prose-h2:font-bold prose-h2:mt-8 prose-li:text-neutral-300 bg-[#050505] p-10 rounded-[2rem] border border-white/5 shadow-inner relative z-10 leading-relaxed">
-                    <div dangerouslySetInnerHTML={{ __html: resultado.texto_estrategia.replace(/\n/g, '<br/>') }} />
+                  <div className="prose prose-invert max-w-none prose-h1:text-3xl prose-h1:font-extrabold prose-h1:tracking-wide prose-h1:text-gold-primary prose-h1:mb-6 prose-h2:text-xl prose-h2:text-white prose-h2:mt-10 prose-h2:mb-4 prose-h2:font-bold prose-h3:text-lg prose-h3:text-gold-primary prose-h3:font-semibold prose-p:text-neutral-300 prose-p:leading-relaxed prose-li:text-neutral-300 prose-li:marker:text-gold-primary prose-strong:text-white prose-strong:font-bold prose-hr:border-white/10 prose-hr:my-8 bg-[#050505] p-10 rounded-[2rem] border border-white/5 shadow-inner relative z-10">
+                    <ReactMarkdown>{resultado.texto_estrategia}</ReactMarkdown>
                   </div>
                 </div>
 
@@ -177,21 +202,21 @@ export default function EstrategiaLegal() {
                     {resultado.precedentes.map((prec, i) => (
                       <div key={i} className="bg-gradient-to-br from-[#111] to-[#050505] border border-white/5 rounded-[1.5rem] p-6 hover:border-gold-primary/40 hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.15)] transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        
+
                         <div className="flex items-start justify-between mb-6">
-                           <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-gold-primary/10 group-hover:scale-110 transition-all duration-500">
-                             <FileText className="w-6 h-6 text-neutral-400 group-hover:text-gold-primary transition-colors" />
-                           </div>
-                           <span className="text-[10px] font-bold text-gold-primary bg-gold-primary/10 border border-gold-primary/20 px-3 py-1.5 rounded-full shadow-inner">
-                              {(prec.similitud * 100).toFixed(1)}% Match
-                           </span>
+                          <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-gold-primary/10 group-hover:scale-110 transition-all duration-500">
+                            <FileText className="w-6 h-6 text-neutral-400 group-hover:text-gold-primary transition-colors" />
+                          </div>
+                          <span className="text-[10px] font-bold text-gold-primary bg-gold-primary/10 border border-gold-primary/20 px-3 py-1.5 rounded-full shadow-inner">
+                            {(prec.similitud * 100).toFixed(1)}% Match
+                          </span>
                         </div>
                         <div>
-                           <p className="font-extrabold text-sm text-white mb-1.5 truncate group-hover:text-gold-primary transition-colors">{prec.archivo}</p>
-                           <div className="flex items-center gap-2">
-                             <div className="w-1.5 h-1.5 rounded-full bg-neutral-600 group-hover:bg-gold-primary transition-colors" />
-                             <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Página {prec.pagina}</p>
-                           </div>
+                          <p className="font-extrabold text-sm text-white mb-1.5 truncate group-hover:text-gold-primary transition-colors">{prec.archivo}</p>
+                          <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-neutral-600 group-hover:bg-gold-primary transition-colors" />
+                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Página {prec.pagina}</p>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -200,7 +225,7 @@ export default function EstrategiaLegal() {
 
               </div>
 
-            </div>          ) : (
+            </div>) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center relative animate-in zoom-in duration-700">
               {/* Anillos concéntricos de energía */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-gold-primary/10 rounded-full animate-[ping_4s_infinite] opacity-50" />

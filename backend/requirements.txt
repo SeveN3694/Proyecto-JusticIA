@@ -1,6 +1,9 @@
 fastapi
 uvicorn
-psycopg
+psycopg[binary]
 google-generativeai
 python-dotenv
 pydantic
+pymupdf
+pgvector
+python-multipart

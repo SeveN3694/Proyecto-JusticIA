@@ -11,9 +11,20 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (username.toLowerCase() === 'cliente') {
+    const role = username.toLowerCase().trim();
+    
+    // Guardar rol para el RBAC del Layout
+    localStorage.setItem('userRole', role);
+
+    // Redirección basada en el rol (mock login para demostración)
+    if (role === 'cliente') {
       navigate('/portal-cliente');
+    } else if (role === 'auxiliar' || role === 'admin') {
+      navigate('/digitalizacion');
+    } else if (role === 'abogado' || role === 'socio') {
+      navigate('/dashboard');
     } else {
+      // Default fallback
       navigate('/dashboard');
     }
   };

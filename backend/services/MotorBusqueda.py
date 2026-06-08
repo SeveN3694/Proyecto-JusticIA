@@ -12,27 +12,67 @@ class MotorBusquedaLegal:
         
         # Configurar Gemini
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        self.embedding_model = "models/text-embedding-004"
+        self.embedding_model = "models/gemini-embedding-2"
         
     def _get_db_connection(self):
         """Crea y retorna una conexión a la base de datos PostgreSQL en Neon"""
         try:
-            return psycopg.connect(self.db_url)
+            db_url = self.db_url
+            if db_url:
+                import urllib.parse
+                parsed = urllib.parse.urlsplit(db_url)
+                qs = urllib.parse.parse_qs(parsed.query)
+                qs.pop('channel_binding', None)
+                if 'neon.tech' in parsed.netloc and 'options' not in qs:
+                    try:
+                        host = parsed.netloc.split('@')[-1].split(':')[0]
+                        endpoint_id = host.split('.')[0] # NO quitar '-pooler'
+                        qs['options'] = [f"endpoint={endpoint_id}"]
+                    except Exception:
+                        pass
+                if 'sslmode' not in qs:
+                    qs['sslmode'] = ['require']
+                new_query = urllib.parse.urlencode(qs, doseq=True)
+                db_url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_query, parsed.fragment))
+            return psycopg.connect(db_url)
         except Exception as e:
             print(f"Error conectando a la base de datos Neon: {e}")
             raise e
 
     def _generar_embedding(self, texto: str) -> list[float]:
         """Convierte texto en un vector usando Google Gemini"""
+        import time
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                result = genai.embed_content(
+                    model=self.embedding_model,
+                    content=texto,
+                    task_type="retrieval_query",
+                )
+                return result['embedding']
+            except Exception as e:
+                if "429" in str(e) and attempt < max_retries - 1:
+                    print(f" [Rate limit detectado, esperando 20s...] ", end="", flush=True)
+                    time.sleep(20)
+                else:
+                    print(f"Error generando embedding con Gemini: {e}")
+                    raise e
+
+    def generar_embedding_batch(self, textos: list[str]) -> list[list[float]]:
+        """Convierte una lista de textos en vectores en una sola llamada para evitar Rate Limits"""
+        if not textos:
+            return []
         try:
+            # Pide a la API de Gemini que procese toda la lista de un solo golpe
             result = genai.embed_content(
                 model=self.embedding_model,
-                content=texto,
-                task_type="retrieval_query",
+                content=textos,
+                task_type="retrieval_document",
             )
             return result['embedding']
         except Exception as e:
-            print(f"Error generando embedding con Gemini: {e}")
+            print(f"Error generando embedding batch con Gemini: {e}")
             raise e
 
     def buscar_similitud(self, hechos_caso: str, limite: int = 5) -> list[dict]:

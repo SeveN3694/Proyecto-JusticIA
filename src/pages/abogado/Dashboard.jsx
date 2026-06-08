@@ -14,7 +14,7 @@ export default function Dashboard() {
           <div className="relative">
             <div className="absolute -left-4 top-2 w-1 h-12 bg-gold-primary rounded-r-full shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
             <h1 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-400 mb-2">
-              Bienvenido, <span className="text-gold-primary">Dr. Martin</span>
+              Bienvenido, <span className="text-gold-primary">Dr. Carmelo</span>
             </h1>
             <p className="text-sm text-neutral-500 font-medium tracking-widest uppercase">Resumen Ejecutivo • Lunes, 5 de Junio</p>
           </div>
@@ -113,7 +113,7 @@ export default function Dashboard() {
             <div className="w-14 h-14 rounded-2xl bg-gold-primary/10 flex items-center justify-center mb-6 border border-gold-primary/20 group-hover:bg-gold-primary/20 transition-colors relative z-10">
               <Sparkles className="w-7 h-7 text-gold-primary group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3 relative z-10">CoCounsel IA</h3>
+            <h3 className="text-xl font-bold text-white mb-3 relative z-10">JusticIA IA</h3>
             <p className="text-sm text-neutral-400 mb-6 line-clamp-3 flex-grow font-light leading-relaxed relative z-10">
               Genera estrategias automatizadas analizando los hechos cruzados con jurisprudencia vectorial.
             </p>
@@ -180,7 +180,7 @@ export default function Dashboard() {
               <div className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl w-full group-hover:bg-white/[0.04] transition-colors">
                 <p className="text-sm font-bold text-white mb-1">Estrategia autogenerada para EXP-2024-001</p>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-neutral-500 font-medium">Por CoCounsel IA (Gemini 1.5 Pro)</p>
+                  <p className="text-xs text-neutral-500 font-medium">Por JusticIA IA (Gemini 1.5 Pro)</p>
                   <p className="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">Hace 2 horas</p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export default function Dashboard() {
               <div className="bg-white/[0.02] border border-white/5 p-4 rounded-2xl w-full group-hover:bg-white/[0.04] transition-colors">
                 <p className="text-sm font-bold text-white mb-1">Nuevo caso creado: "Demanda Laboral Ruiz"</p>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-neutral-500 font-medium">Por Dr. Mendoza</p>
+                  <p className="text-xs text-neutral-500 font-medium">Por Dr. Martin</p>
                   <p className="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">Ayer a las 16:30 hrs</p>
                 </div>
               </div>
