@@ -1,10 +1,10 @@
 Set-ExecutionPolicy Unrestricted -Scope Process
 
 <p align="center">
-  <img src="assets/icon.png" alt="JusticIA Icon" width="128"/>
+  <img src="src/assets/JusticIA.png" alt="JusticIA Icon" width="128"/>
 </p>
 
-<h1 align="center">JusticIA / Arxatec ⚖️</h1>
+<h1 align="center">JusticIA ⚖️</h1>
 
 <p align="center">
   <strong>El futuro del LegalTech con Inteligencia Artificial y RAG</strong><br>
@@ -12,10 +12,10 @@ Set-ExecutionPolicy Unrestricted -Scope Process
 </p>
 
 <p align="center">
-  <img src="assets/screenshot1.png" alt="Login y Roles" width="200" style="border-radius:26px;"/>
-  <img src="assets/screenshot2.png" alt="Dashboard Abogado" width="200" style="border-radius:26px;"/>
-  <img src="assets/screenshot3.png" alt="Estrategia Legal IA" width="200" style="border-radius:26px;"/>
-  <img src="assets/screenshot4.png" alt="Portal del Cliente" width="200" style="border-radius:26px;"/>
+  <img src="src/assets/Login.png" alt="Login y Roles" width="200" style="border-radius:26px;"/>
+  <img src="src/assets/dashboard_abogado.png" alt="Dashboard Abogado" width="200" style="border-radius:26px;"/>
+  <img src="src/assets/estrategia_legal_ia.png" alt="Estrategia Legal IA" width="200" style="border-radius:26px;"/>
+  <img src="src/assets/portal_cliente.png" alt="Portal del Cliente" width="200" style="border-radius:26px;"/>
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@ Set-ExecutionPolicy Unrestricted -Scope Process
 
 ## 📖 Concepto del Proyecto
 
-**JusticIA (Arxatec)** es un software de gestión legal y una plataforma integral de tecnología para abogados diseñada para optimizar y centralizar el trabajo en despachos jurídicos. Su propuesta de valor principal es integrar un **Asistente Legal con Inteligencia Artificial (IA)** que entiende el contexto completo de los expedientes gracias a la tecnología **RAG (Retrieval-Augmented Generation)**.
+**JusticIA** es un software de gestión legal y una plataforma integral de tecnología para abogados diseñada para optimizar y centralizar el trabajo en despachos jurídicos. Su propuesta de valor principal es integrar un **Asistente Legal con Inteligencia Artificial (IA)** que entiende el contexto completo de los expedientes gracias a la tecnología **RAG (Retrieval-Augmented Generation)**.
 
 El sistema unifica las operaciones diarias del ejercicio profesional con el fin de multiplicar la productividad y reducir el caos administrativo. Pasa de un proceso de investigación manual de jurisprudencia que toma semanas, a un flujo automatizado que toma horas o minutos, asegurando predictibilidad y certeza en la estrategia legal.
 
@@ -212,5 +212,5 @@ El flujo completo que realiza el software desde que el cliente llega al despacho
 ---
 
 <p align="center">
-  Hecho con ⚖️ e 🤖 por el equipo de Arxatec.
+  Hecho con ⚖️ e 🤖 por el equipo de JusticIA.
 </p>
