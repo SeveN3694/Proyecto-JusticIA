@@ -21,6 +21,9 @@
   <img src="src/assets/digitalizacion.png" alt="Módulo de Digitalización" width="48%" style="border-radius:16px;"/>
   <img src="src/assets/directorio.png" alt="Directorio Legal" width="48%" style="border-radius:16px;"/>
 </p>
+<p align="center">
+  <img src="src/assets/formulario.png" alt="Formulario de Ingreso de Caso" width="48%" style="border-radius:16px;"/>
+</p>
 
 <p align="center">
     <img src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react" alt="React">
