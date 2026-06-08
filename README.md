@@ -1,5 +1,3 @@
-Set-ExecutionPolicy Unrestricted -Scope Process
-
 <p align="center">
   <img src="src/assets/JusticIA.png" alt="JusticIA Icon" width="128"/>
 </p>
@@ -12,10 +10,12 @@ Set-ExecutionPolicy Unrestricted -Scope Process
 </p>
 
 <p align="center">
-  <img src="src/assets/Login.png" alt="Login y Roles" width="200" style="border-radius:26px;"/>
-  <img src="src/assets/dashboard_abogado.png" alt="Dashboard Abogado" width="200" style="border-radius:26px;"/>
-  <img src="src/assets/estrategia_legal_ia.png" alt="Estrategia Legal IA" width="200" style="border-radius:26px;"/>
-  <img src="src/assets/portal_cliente.png" alt="Portal del Cliente" width="200" style="border-radius:26px;"/>
+  <img src="src/assets/Login.png" alt="Login y Roles" width="48%" style="border-radius:16px;"/>
+  <img src="src/assets/dashboard_abogado.png" alt="Dashboard Abogado" width="48%" style="border-radius:16px;"/>
+</p>
+<p align="center">
+  <img src="src/assets/estrategia_legal_ia.png" alt="Estrategia Legal IA" width="48%" style="border-radius:16px;"/>
+  <img src="src/assets/portal_cliente.png" alt="Portal del Cliente" width="48%" style="border-radius:16px;"/>
 </p>
 
 <p align="center">
@@ -159,7 +159,8 @@ Para ejecutar el proyecto de forma local, necesitarás iniciar dos servidores en
    ```bash
    python -m venv env
    
-   # En Windows:
+   # En Windows (si arroja error de scripts desactivados, ejecuta primero):
+   Set-ExecutionPolicy Unrestricted -Scope Process
    env\Scripts\activate
    
    # En macOS/Linux:
