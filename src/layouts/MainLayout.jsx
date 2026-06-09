@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, FolderOpen, Sparkles, Database, LogOut } from 'lucide-react';
+import { Search, FolderOpen, Sparkles, Database, LogOut, Calendar, DollarSign } from 'lucide-react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import logoJusticia from '../assets/JusticIA.png';
 
@@ -48,6 +48,22 @@ export default function MainLayout() {
               >
                 <Search className="w-6 h-6" />
                 <span className="absolute left-14 bg-black text-xs px-2 py-1 rounded border border-legal-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">Directorio de Casos</span>
+              </button>
+
+              <button 
+                onClick={() => navigate('/agenda')} 
+                className={`p-3 rounded-xl relative group transition-all duration-300 ${isActive('/agenda') ? 'bg-gold-primary/10 border border-gold-primary/30 text-gold-primary shadow-[0_0_15px_rgba(212,175,55,0.15)]' : 'text-neutral-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+              >
+                <Calendar className="w-6 h-6" />
+                <span className="absolute left-14 bg-black text-xs px-2 py-1 rounded border border-legal-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">Agenda y Calendario</span>
+              </button>
+
+              <button 
+                onClick={() => navigate('/finanzas')} 
+                className={`p-3 rounded-xl relative group transition-all duration-300 ${isActive('/finanzas') ? 'bg-gold-primary/10 border border-gold-primary/30 text-gold-primary shadow-[0_0_15px_rgba(212,175,55,0.15)]' : 'text-neutral-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+              >
+                <DollarSign className="w-6 h-6" />
+                <span className="absolute left-14 bg-black text-xs px-2 py-1 rounded border border-legal-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">Finanzas y Horas</span>
               </button>
             </>
           )}

@@ -10,6 +10,12 @@
 </p>
 
 <p align="center">
+  <a href="demostracion.md">
+    <img src="https://img.shields.io/badge/🎬_Simulación_Interactiva_Paso_a_Paso-FF0000?style=for-the-badge" alt="Simulación Interactiva">
+  </a>
+</p>
+
+<p align="center">
   <img src="src/assets/Login.png" alt="Login y Roles" width="48%" style="border-radius:16px;"/>
   <img src="src/assets/dashboard_abogado.png" alt="Dashboard Abogado" width="48%" style="border-radius:16px;"/>
 </p>

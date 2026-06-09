@@ -35,11 +35,12 @@ class ValoradorJuridico:
         2. IMPORTANTE: Si la Base de Conocimiento local está vacía, utiliza tu vasto conocimiento interno del Código Civil, Código Penal del Perú y la jurisprudencia peruana para redactar la estrategia, como un abogado experto.
         3. Redacta una "Estrategia Legal Recomendada" en formato Markdown.
         4. Identifica "Líneas de Investigación" clave.
-        5. Calcula un porcentaje estimado de viabilidad matemática (0 a 100) basado en tu análisis legal.
+        5. IMPORTANTE: Sugiere exactamente 3 hitos procesales clave para el Calendario (ej. "Día 15: Vencimiento de apelación").
+        6. Calcula un porcentaje estimado de viabilidad matemática (0 a 100) basado en tu análisis legal.
         
         Responde DIRECTAMENTE en formato Markdown con tu estrategia.
-        AL FINAL de tu respuesta, en la última línea, debes incluir OBLIGATORIAMENTE el porcentaje de viabilidad en este formato exacto:
-        [VIABILIDAD: 85.5]
+        AL FINAL de tu respuesta, en la última línea, debes incluir OBLIGATORIAMENTE el porcentaje de viabilidad y los hitos en este formato exacto JSON (sin tildes en las claves):
+        [DATA: {{"viabilidad": 85.5, "hitos": ["Hito 1", "Hito 2", "Hito 3"]}}]
         """
         return prompt
 
@@ -54,19 +55,28 @@ class ValoradorJuridico:
             texto_respuesta = response.text
             
             import re
+            import json
             
-            # Buscar la viabilidad al final del texto
-            match = re.search(r'\[VIABILIDAD:\s*([\d\.]+)\]', texto_respuesta)
+            # Buscar el bloque JSON al final del texto
+            match = re.search(r'\[DATA:\s*(\{.*?\})\s*\]', texto_respuesta)
             if match:
-                viabilidad_val = float(match.group(1))
+                try:
+                    data_extraida = json.loads(match.group(1))
+                    viabilidad_val = float(data_extraida.get("viabilidad", 0.0))
+                    hitos_val = data_extraida.get("hitos", [])
+                except Exception:
+                    viabilidad_val = 0.0
+                    hitos_val = []
                 texto_estrategia = texto_respuesta[:match.start()].strip()
             else:
                 viabilidad_val = 0.0
+                hitos_val = []
                 texto_estrategia = texto_respuesta.strip()
 
             return {
                 "texto_estrategia": texto_estrategia,
-                "viabilidad": viabilidad_val
+                "viabilidad": viabilidad_val,
+                "hitos_sugeridos": hitos_val
             }
                 
         except Exception as e:

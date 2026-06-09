@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Sparkles, Scale, FileText, CheckCircle, AlertTriangle, Loader2, Target, BrainCircuit, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -8,6 +8,14 @@ export default function EstrategiaLegal() {
   const [hechos, setHechos] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [resultado, setResultado] = useState(null);
+  const [selectedPrecedente, setSelectedPrecedente] = useState(null);
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (resultado && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [resultado]);
 
   const handleGenerate = async () => {
     if (!hechos.trim()) return;
@@ -39,8 +47,10 @@ export default function EstrategiaLegal() {
         precedentes: data.precedentes_usados.map(p => ({
           archivo: p.archivo,
           pagina: p.pagina,
-          similitud: p.score_similitud
-        }))
+          similitud: p.score_similitud,
+          texto: p.texto || "No se pudo recuperar el fragmento del documento."
+        })),
+        hitos: data.hitos_sugeridos || []
       });
       setIsGenerating(false);
     } catch (error) {
@@ -49,7 +59,8 @@ export default function EstrategiaLegal() {
       setResultado({
         viabilidad: 0,
         texto_estrategia: "# Error de Conexión\n\nNo se pudo conectar con el motor de inferencia (FastAPI). Verifica que el servidor de backend esté corriendo en el puerto 8000.",
-        precedentes: []
+        precedentes: [],
+        hitos: []
       });
       setIsGenerating(false);
     }
@@ -182,7 +193,7 @@ export default function EstrategiaLegal() {
               </div>
 
               {/* Body Reporte (Scrollable) */}
-              <div className="flex-1 overflow-y-auto pr-4 flex flex-col gap-8">
+              <div ref={scrollContainerRef} className="flex-1 overflow-y-auto pr-4 flex flex-col gap-8">
 
                 {/* Texto */}
                 <div className="relative group">
@@ -192,6 +203,45 @@ export default function EstrategiaLegal() {
                   </div>
                 </div>
 
+                {/* Hitos Procesales Sugeridos */}
+                {resultado.hitos && resultado.hitos.length > 0 && (
+                  <div>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-4 flex items-center gap-2 ml-2">
+                      <Target className="w-3 h-3 text-gold-primary" />
+                      Hitos Procesales Sugeridos para Calendario
+                    </h4>
+                    <div className="flex flex-col gap-3 mb-8">
+                      {resultado.hitos.map((hito, i) => (
+                        <div key={i} className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-gold-primary/5 hover:border-gold-primary/20 transition-all group">
+                          <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 rounded-full bg-black border-[2px] border-gold-primary/30 flex items-center justify-center group-hover:border-gold-primary transition-colors">
+                              <span className="text-xs font-bold text-gold-primary">{i + 1}</span>
+                            </div>
+                            <p className="text-sm font-bold text-white tracking-wide group-hover:text-gold-primary transition-colors">{hito}</p>
+                          </div>
+                          <button 
+                            onClick={async () => {
+                              try {
+                                await fetch('http://localhost:8000/api/calendario', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ id_caso: 1, titulo_evento: hito, fecha_evento: new Date().toISOString().split('T')[0], estado: 'Pendiente' })
+                                });
+                                alert('Hito agregado a la agenda exitosamente.');
+                              } catch(e) {
+                                console.error(e);
+                              }
+                            }}
+                            className="text-[10px] uppercase tracking-widest font-bold text-gold-primary/70 hover:text-gold-primary bg-gold-primary/10 px-3 py-1.5 rounded-full transition-colors"
+                          >
+                            Añadir a Agenda
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Jurisprudencia en layout horizontal de cartas de lujo */}
                 <div>
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-4 flex items-center gap-2 ml-2">
@@ -200,7 +250,7 @@ export default function EstrategiaLegal() {
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {resultado.precedentes.map((prec, i) => (
-                      <div key={i} className="bg-gradient-to-br from-[#111] to-[#050505] border border-white/5 rounded-[1.5rem] p-6 hover:border-gold-primary/40 hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.15)] transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
+                      <div key={i} onClick={() => setSelectedPrecedente(prec)} className="bg-gradient-to-br from-[#111] to-[#050505] border border-white/5 rounded-[1.5rem] p-6 hover:border-gold-primary/40 hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.15)] transition-all cursor-pointer group flex flex-col justify-between relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                         <div className="flex items-start justify-between mb-6">
@@ -245,6 +295,40 @@ export default function EstrategiaLegal() {
           )}
         </div>
       </div>
+      {/* Modal Precedente */}
+      {selectedPrecedente && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-[#0a0a0a] border border-gold-primary/20 rounded-[2rem] w-full max-w-4xl shadow-[0_0_50px_rgba(212,175,55,0.15)] flex flex-col max-h-[85vh] overflow-hidden">
+            <div className="p-6 border-b border-white/5 bg-[#111] flex justify-between items-center shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gold-primary/10 flex items-center justify-center border border-gold-primary/20">
+                  <Database className="w-5 h-5 text-gold-primary" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-sm truncate max-w-md">{selectedPrecedente.archivo}</h3>
+                  <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Página {selectedPrecedente.pagina}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedPrecedente(null)}
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-8 overflow-y-auto flex-1">
+              <p className="text-base md:text-lg leading-loose text-neutral-200 font-normal whitespace-pre-wrap">
+                {selectedPrecedente.texto}
+              </p>
+            </div>
+            <div className="p-4 border-t border-white/5 bg-[#050505] flex justify-end shrink-0">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-gold-primary bg-gold-primary/10 px-3 py-1.5 rounded-full border border-gold-primary/20">
+                Coincidencia Semántica: {(selectedPrecedente.similitud * 100).toFixed(1)}%
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,8 @@ import IngresoCaso from './pages/abogado/IngresoCaso';
 import EstrategiaLegal from './pages/abogado/EstrategiaLegal';
 import DirectorioCasos from './pages/abogado/DirectorioCasos';
 import Digitalizacion from './pages/admin/Digitalizacion';
+import AgendaCalendario from './pages/abogado/AgendaCalendario';
+import FinanzasTracking from './pages/abogado/FinanzasTracking';
 import PortalCliente from './pages/cliente/PortalCliente';
 import MainLayout from './layouts/MainLayout';
 
@@ -23,6 +25,8 @@ function App() {
           <Route path="/ingreso-caso" element={<IngresoCaso />} />
           <Route path="/estrategia-legal" element={<EstrategiaLegal />} />
           <Route path="/directorio-casos" element={<DirectorioCasos />} />
+          <Route path="/agenda" element={<AgendaCalendario />} />
+          <Route path="/finanzas" element={<FinanzasTracking />} />
           
           {/* Módulo Operativo / Admin */}
           <Route path="/digitalizacion" element={<Digitalizacion />} />

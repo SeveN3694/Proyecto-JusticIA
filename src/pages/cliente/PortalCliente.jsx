@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogOut, User, FileText, MessageSquare, Clock, CheckCircle2, CircleDot, Circle, Send, Loader2 } from 'lucide-react';
+import { LogOut, User, FileText, MessageSquare, Clock, CheckCircle2, CircleDot, Circle, Send, Loader2, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import logoJusticia from '../../assets/JusticIA.png';
@@ -10,6 +10,25 @@ export default function PortalCliente() {
   const [chatLog, setChatLog] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [eventos, setEventos] = useState([]);
+  const [documentos, setDocumentos] = useState([]);
+  const [docViewer, setDocViewer] = useState(null);
+
+  React.useEffect(() => {
+    fetch('http://localhost:8000/api/calendario/1')
+      .then(res => res.json())
+      .then(data => setEventos(data))
+      .catch(err => console.error(err));
+
+    fetch('http://localhost:8000/api/documentos')
+      .then(res => res.json())
+      .then(data => {
+        // Filtrar archivos de leyes/códigos base para que solo se vean los del cliente
+        const docsCliente = data.filter(doc => !doc.nombre_archivo.toLowerCase().includes('codigo') && !doc.nombre_archivo.toLowerCase().includes('código') && !doc.nombre_archivo.startsWith('0'));
+        setDocumentos(docsCliente);
+      })
+      .catch(err => console.error("Error cargando documentos:", err));
+  }, []);
 
   const enviarConsulta = async () => {
     if (!mensaje.trim()) return;
@@ -88,28 +107,31 @@ export default function PortalCliente() {
               
               {/* Pasos */}
               {[
-                { label: 'Ingresado', status: 'completed' },
-                { label: 'Análisis Legal', status: 'completed' },
-                { label: 'Diseño de Estrategia', status: 'current' },
-                { label: 'Aprobado', status: 'pending' },
-              ].map((step, idx) => (
-                <div key={idx} className="relative z-10 flex flex-col items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                    step.status === 'completed' ? 'bg-gold-primary border-gold-primary text-black shadow-[0_0_15px_rgba(212,175,55,0.4)]' :
-                    step.status === 'current' ? 'bg-legal-dark border-gold-primary text-gold-primary shadow-[0_0_10px_rgba(212,175,55,0.2)]' :
-                    'bg-legal-dark border-neutral-700 text-neutral-700'
-                  }`}>
-                    {step.status === 'completed' ? <CheckCircle2 className="w-5 h-5" /> : 
-                     step.status === 'current' ? <CircleDot className="w-5 h-5" /> : 
-                     <Circle className="w-5 h-5" />}
+                { titulo_evento: 'Presentación de Demanda', estado: 'Completado', fecha_evento: '12 May' },
+                { titulo_evento: 'Recolección de Pruebas', estado: 'Pendiente', fecha_evento: 'Activo' },
+                { titulo_evento: 'Conciliación / Audiencia', estado: 'Pendiente', fecha_evento: 'Por definir' },
+                { titulo_evento: 'Sentencia / Resolución', estado: 'Pendiente', fecha_evento: 'Por definir' }
+              ].map((evt, idx) => {
+                const isCompleted = evt.estado === 'Completado';
+                const isActive = evt.estado === 'Pendiente' && idx === 1; // Hacer el paso 2 activo
+                return (
+                  <div key={idx} className="relative z-10 flex flex-col items-center gap-3 w-32 text-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                      isCompleted ? 'bg-gold-primary border-gold-primary text-black shadow-[0_0_15px_rgba(212,175,55,0.4)]' :
+                      isActive ? 'bg-legal-dark border-gold-primary text-gold-primary shadow-[0_0_15px_rgba(212,175,55,0.2)]' :
+                      'bg-legal-dark border-neutral-700 text-neutral-700'
+                    }`}>
+                      {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : isActive ? <CircleDot className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className={`text-xs font-bold leading-tight mb-1 ${
+                        isCompleted || isActive ? 'text-neutral-300' : 'text-neutral-600'
+                      }`}>{evt.titulo_evento}</span>
+                      <span className={`text-[10px] font-medium ${isActive ? 'text-gold-primary animate-pulse' : 'text-neutral-500'}`}>{evt.fecha_evento}</span>
+                    </div>
                   </div>
-                  <span className={`text-xs font-bold ${
-                    step.status === 'completed' ? 'text-neutral-300' :
-                    step.status === 'current' ? 'text-gold-primary' :
-                    'text-neutral-600'
-                  }`}>{step.label}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -117,7 +139,7 @@ export default function PortalCliente() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <span className="text-xs font-bold text-gold-primary uppercase tracking-wider mb-1 block">Expediente EXP-2024-001</span>
-                <h2 className="text-2xl font-bold text-white">Divorcio por Causal</h2>
+                <h2 className="text-2xl font-bold text-white">Protección y Defensa al Consumidor</h2>
               </div>
               <span className="bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-medium">
                 En Trámite
@@ -152,23 +174,72 @@ export default function PortalCliente() {
 
           <div className="bg-legal-panel border border-legal-border rounded-2xl p-6">
             <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-neutral-400" />
+              Cronograma Detallado
+            </h3>
+            <div className="space-y-4 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gold-primary/20 pr-2">
+              {eventos.length === 0 ? (
+                <div className="text-xs text-neutral-500 italic">Cargando hitos detallados...</div>
+              ) : (
+                eventos.map((evt, idx) => (
+                  <div key={idx} className="flex gap-4 items-start relative">
+                    <div className="w-[2px] h-full bg-neutral-800 absolute left-2 top-4 -z-10"></div>
+                    <div className={`w-4 h-4 rounded-full mt-1 shrink-0 ${evt.estado === 'Completado' ? 'bg-gold-primary' : 'bg-neutral-700 border-2 border-neutral-600'}`}></div>
+                    <div>
+                      <div className="text-sm text-neutral-200 font-medium">{evt.titulo_evento}</div>
+                      <div className="text-xs text-neutral-500">{evt.fecha_evento}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="bg-legal-panel border border-legal-border rounded-2xl p-6">
+            <h3 className="font-bold text-white mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-neutral-400" />
               Mis Documentos
             </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg border border-legal-border hover:border-gold-primary/30 cursor-pointer">
-                <span className="text-sm text-neutral-300">Demanda_Inicial.pdf</span>
-                <span className="text-xs text-gold-primary">Ver</span>
-              </div>
-              <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg border border-legal-border hover:border-gold-primary/30 cursor-pointer">
-                <span className="text-sm text-neutral-300">Contrato_Servicios.pdf</span>
-                <span className="text-xs text-gold-primary">Ver</span>
-              </div>
+            <div className="space-y-3 max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gold-primary/20">
+              {documentos.length === 0 ? (
+                <div className="text-xs text-neutral-500 italic">No hay documentos subidos.</div>
+              ) : (
+                documentos.map(doc => (
+                  <button 
+                    key={doc.id_documento} 
+                    onClick={() => setDocViewer(`http://localhost:8000/uploads/${encodeURIComponent(doc.nombre_archivo)}`)}
+                    className="w-full flex items-center justify-between bg-black/30 p-3 mb-2 rounded-lg border border-legal-border hover:border-gold-primary/30 cursor-pointer transition-colors group text-left"
+                  >
+                    <span className="text-sm text-neutral-300 truncate w-3/4 group-hover:text-white">{doc.nombre_archivo}</span>
+                    <span className="text-[10px] text-gold-primary font-bold uppercase tracking-widest px-2 py-1 bg-gold-primary/10 rounded-full group-hover:bg-gold-primary group-hover:text-black transition-all">Ver</span>
+                  </button>
+                ))
+              )}
             </div>
           </div>
         </div>
 
       </div>
+
+      {/* MODAL DEL VISOR DE DOCUMENTOS */}
+      {docViewer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-in fade-in duration-300">
+          <div className="w-full max-w-5xl h-full max-h-[90vh] bg-legal-panel border border-legal-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b border-legal-border bg-black/40">
+              <h3 className="text-white font-bold tracking-wide flex items-center gap-2">
+                <FileText className="w-5 h-5 text-gold-primary" />
+                Visor de Documento
+              </h3>
+              <button onClick={() => setDocViewer(null)} className="text-neutral-400 hover:text-white transition-colors bg-neutral-800 p-1.5 rounded-lg">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 bg-white relative">
+              <iframe src={docViewer} className="absolute inset-0 w-full h-full border-0" title="Document Viewer" />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating Chat Widget */}
       <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">

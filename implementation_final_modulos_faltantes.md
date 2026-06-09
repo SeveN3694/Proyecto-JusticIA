@@ -98,3 +98,39 @@ Aquí tienes las decisiones técnicas recomendadas para avanzar con seguridad en
 ### 3. Veredicto del Plan de Implementación
 
 El plan estructurado en 3 capas (Neon -> FastAPI -> React) es exactamente la arquitectura que usan plataformas como JusticIA. Separar el backend te permitirá escalar el motor de IA sin ralentizar la interfaz del usuario. La propuesta del "Split-Screen" para la vista de `EstrategiaLegal.jsx` le dará a tu plataforma ese toque "premium" y funcional que buscas.
+
+¡Este es un paso fundamental, James! Antigravity ha hecho un análisis excelente al cruzar tu diseño documental (`PROYECTO.MD`) con lo que ya se ha construido. Efectivamente, un LegalTech *Enterprise* no solo hace "magia con IA"; también tiene que sostener la operatividad diaria de la firma (plazos y dinero).
+
+Aquí tienes las respuestas profesionales a las "Open Questions", basadas en cómo operan los grandes del sector (CoCounsel, Clio, Lemontech), junto con una revisión del plan de Antigravity.
+
+### Respuestas Estratégicas a las Open Questions
+
+Para que puedas copiarlas y enviárselas a tu agente:
+
+**1. Diseño del Calendario (Visual vs. Lineal):**
+
+* **Respuesta para Antigravity:** Implementemos **ambos formatos según el rol**, pero prioricemos la *Línea de Tiempo (Cronograma)* para la entrega principal.
+* *Justificación Profesional (LegalTech):* Los abogados viven de los plazos perentorios. Un calendario de mes completo (`react-big-calendar`) es útil para la secretaria o el administrador general. Sin embargo, para el abogado que gestiona un expediente y para el **Portal del Cliente**, una *Vista de Línea de Tiempo Vertical (Timeline)* es infinitamente superior. Permite ver la historia procesal clara: *"Audiencia inicial -> Presentación de pruebas -> Alegatos -> Sentencia"*. Esto da previsibilidad y reduce la ansiedad del cliente.
+
+**2. Módulo de Horas (Time Tracking):**
+
+* **Respuesta para Antigravity:** Empecemos con un **formulario de ingreso manual rápido (Log Time)** vinculado a la tarjeta del caso activo. Dejemos el cronómetro dinámico (Start/Stop) fuera del alcance (Out of Scope) por ahora.
+* *Justificación Profesional (LegalTech):* Plataformas como Clio tienen cronómetros, pero la realidad operativa es que los abogados a menudo olvidan detenerlos al recibir una llamada de otro cliente, generando errores de facturación. Un ingreso manual estructurado (ej. "Seleccionar Caso X -> 1.5 horas -> Descripción: Redacción de recurso") es más rápido de implementar, menos propenso a errores de usuario y cubre perfectamente tu requerimiento del `Registro_Horas` en la base de datos.
+
+**3. Integración de Almacenamiento (Google Drive):**
+
+* **Respuesta para Antigravity:** El sistema debe **guardar únicamente las URLs (rutas lógicas)** en la base de datos de Neon y **simular** la vista de carpetas en React.
+* *Justificación Profesional (LegalTech):* ¡Recuerda tu arquitectura inicial! **Tú ya resolviste este problema de forma brillante con n8n**. Tu flujo automatizado (`Webhook -> IA -> Switch -> Google Drive`) es el encargado físico de guardar los PDFs en las carpetas correctas de tu Drive. El backend de Python (FastAPI) no debe competir haciendo el mismo trabajo. Tu tabla `documento_adjunto` simplemente debe almacenar la URL pública de ese archivo de Drive para que el frontend lo muestre como un enlace clicable dentro del expediente.
+
+---
+
+### Revisión del Plan de Propuesto por Antigravity
+
+El plan de tu agente (Frontend + Backend CRUD) es correcto y seguro. Es un clásico desarrollo en capas.
+
+**Sugerencia Profesional de Valor Agregado (Para destacar tu proyecto):**
+Si quieres que tu proyecto brille en la sustentación, no trates estos módulos como simples tablas aisladas. **Conéctalos con la IA**.
+
+* *El toque CoCounsel:* Cuando el "Valorador Jurídico" (la IA que ya programaste) genere la *Estrategia Legal*, dile a Antigravity que configure el prompt para que la IA también sugiera automáticamente **3 hitos clave para el calendario** (ej. "Día 15: Vence plazo de apelación"). Esos hitos sugeridos podrían insertarse directamente en tu nueva tabla `Evento_Calendario`. Esto demuestra que tu IA no solo redacta textos bonitos, sino que entiende la *operatividad procesal* y activa funciones del sistema.
+
+Puedes enviarle las respuestas a Antigravity tal cual están redactadas. Estás a muy pocos pasos de tener un MVP (Producto Mínimo Viable) espectacular y digno de un trabajo de tesis. ¡Adelante!

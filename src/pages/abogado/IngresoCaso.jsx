@@ -7,6 +7,14 @@ export default function IngresoCaso() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState("Ningún archivo seleccionado");
+  const [notification, setNotification] = useState({ show: false, type: '', message: '' });
+
+  const showNotification = (type, message) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => {
+      setNotification({ show: false, type: '', message: '' });
+    }, 4000);
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
@@ -24,24 +32,38 @@ export default function IngresoCaso() {
     const formData = new FormData(e.target);
 
     try {
-      // REEMPLAZA ESTA URL CON TU WEBHOOK DE PRODUCCIÓN DE n8n
-      const webhookUrl = 'https://jamess7.app.n8n.cloud/webhook-test/8ea64518-ca06-4d46-a579-193d5ff0958b';
+      // 1. Guardar en Backend Local (Neon DB, Expediente, Cliente, Vectores RAG y PDF físico)
+      const localResponse = await fetch('http://localhost:8000/api/documentos/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-      const response = await fetch(webhookUrl, {
+      if (!localResponse.ok) {
+        let errorMsg = 'Error al crear el expediente en la base de datos local.';
+        try {
+          const errData = await localResponse.json();
+          errorMsg = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
+        } catch(e) {}
+        throw new Error(errorMsg);
+      }
+
+      // 2. Disparar Webhook de n8n (Google Drive + Telegram)
+      const webhookUrl = 'https://jamess7.app.n8n.cloud/webhook-test/8ea64518-ca06-4d46-a579-193d5ff0958b';
+      const n8nResponse = await fetch(webhookUrl, {
         method: 'POST',
         body: formData, // n8n procesará esto como multipart/form-data
       });
 
-      if (response.ok) {
-        alert("¡Caso enviado a n8n exitosamente!");
+      if (localResponse.ok && n8nResponse.ok) {
+        showNotification('success', '¡Expediente creado en Base de Datos y sincronizado con n8n exitosamente!');
         e.target.reset();
         setFileName("Ningún archivo seleccionado");
       } else {
-        alert("Error al enviar el caso.");
+        showNotification('warning', 'Expediente creado localmente, pero error al sincronizar con n8n.');
       }
     } catch (error) {
       console.error("Error de conexión:", error);
-      alert("No se pudo conectar con el servidor n8n.");
+      showNotification('error', "Error en el proceso: " + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -50,6 +72,17 @@ export default function IngresoCaso() {
   return (
     <div className="h-full overflow-y-auto text-neutral-200 flex flex-col items-center py-12 px-6 relative animate-in fade-in duration-500">
 
+      {/* Enterprise Toast Notification */}
+      {notification.show && (
+        <div className={`fixed top-8 right-8 z-50 flex items-center gap-3 px-6 py-4 rounded-xl border shadow-2xl animate-in slide-in-from-top-10 fade-in duration-300 ${
+          notification.type === 'success' ? 'bg-green-900/40 border-green-500/50 text-green-400' :
+          notification.type === 'error' ? 'bg-red-900/40 border-red-500/50 text-red-400' :
+          'bg-yellow-900/40 border-yellow-500/50 text-yellow-400'
+        }`}>
+          <div className="w-2 h-2 rounded-full animate-pulse bg-current"></div>
+          <p className="text-sm font-medium tracking-wide">{notification.message}</p>
+        </div>
+      )}
 
       <div className="relative z-10 w-full max-w-lg bg-legal-panel/85 border border-legal-border rounded-2xl shadow-2xl p-8 backdrop-blur-md">
         
