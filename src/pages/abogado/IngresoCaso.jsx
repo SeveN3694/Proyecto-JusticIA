@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, Send, User, MapPin, Map, FileText, ArrowLeft } from 'lucide-react';
 import logoJusticia from '../../assets/JusticIA.png';
+import { API_URL } from '../../config';
 
 export default function IngresoCaso() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function IngresoCaso() {
 
     try {
       // 1. Guardar en Backend Local (Neon DB, Expediente, Cliente, Vectores RAG y PDF físico)
-      const localResponse = await fetch('http://localhost:8000/api/documentos/upload', {
+      const localResponse = await fetch(`${API_URL}/api/documentos/upload`, {
         method: 'POST',
         body: formData,
       });

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Plus, Target, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
+import { API_URL } from '../../config';
 
 export default function AgendaCalendario() {
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchEventos = () => {
-    fetch('http://localhost:8000/api/calendario/1')
+    fetch(`${API_URL}/api/calendario/1`)
       .then(res => res.json())
       .then(data => {
         setEventos(data);
@@ -29,7 +30,7 @@ export default function AgendaCalendario() {
     if (!fecha) return;
 
     try {
-      await fetch('http://localhost:8000/api/calendario', {
+      await fetch(`${API_URL}/api/calendario`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_caso: 1, titulo_evento: titulo, fecha_evento: fecha, estado: 'Pendiente' })
@@ -42,7 +43,7 @@ export default function AgendaCalendario() {
 
   const handleCompletar = async (id_evento) => {
     try {
-      await fetch(`http://localhost:8000/api/calendario/${id_evento}/completar`, {
+      await fetch(`${API_URL}/api/calendario/${id_evento}/completar`, {
         method: 'PUT'
       });
       fetchEventos();

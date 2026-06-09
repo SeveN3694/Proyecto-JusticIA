@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Sparkles, Scale, FileText, CheckCircle, AlertTriangle, Loader2, Target, BrainCircuit, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { API_URL } from '../../config';
 
 export default function EstrategiaLegal() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function EstrategiaLegal() {
 
     try {
       // Llamada real al backend FastAPI
-      const response = await fetch('http://localhost:8000/api/ia/estrategia', {
+      const response = await fetch(`${API_URL}/api/ia/estrategia`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -222,7 +223,7 @@ export default function EstrategiaLegal() {
                           <button 
                             onClick={async () => {
                               try {
-                                await fetch('http://localhost:8000/api/calendario', {
+                                await fetch(`${API_URL}/api/calendario`, {
                                   method: 'POST',
                                   headers: { 'Content-Type': 'application/json' },
                                   body: JSON.stringify({ id_caso: 1, titulo_evento: hito, fecha_evento: new Date().toISOString().split('T')[0], estado: 'Pendiente' })

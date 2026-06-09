@@ -3,6 +3,7 @@ import { LogOut, User, FileText, MessageSquare, Clock, CheckCircle2, CircleDot, 
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import logoJusticia from '../../assets/JusticIA.png';
+import { API_URL } from '../../config';
 
 export default function PortalCliente() {
   const navigate = useNavigate();
@@ -18,12 +19,12 @@ export default function PortalCliente() {
   const [loadingFases, setLoadingFases] = useState(true);
 
   React.useEffect(() => {
-    fetch('http://localhost:8000/api/calendario/1')
+    fetch(`${API_URL}/api/calendario/1`)
       .then(res => res.json())
       .then(data => setEventos(data))
       .catch(err => console.error(err));
 
-    fetch('http://localhost:8000/api/documentos')
+    fetch(`${API_URL}/api/documentos`)
       .then(res => res.json())
       .then(data => {
         // Filtrar archivos de leyes/códigos base para que solo se vean los del cliente
@@ -32,7 +33,7 @@ export default function PortalCliente() {
       })
       .catch(err => console.error("Error cargando documentos:", err));
 
-    fetch('http://localhost:8000/api/casos')
+    fetch(`${API_URL}/api/casos`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
@@ -45,7 +46,7 @@ export default function PortalCliente() {
   React.useEffect(() => {
     if (casoActual) {
       setLoadingFases(true);
-      fetch('http://localhost:8000/api/ia/fases', {
+      fetch(`${API_URL}/api/ia/fases`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,7 +76,7 @@ export default function PortalCliente() {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/ia/chat', {
+      const response = await fetch(`${API_URL}/api/ia/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -265,7 +266,7 @@ export default function PortalCliente() {
                 documentos.map(doc => (
                   <button 
                     key={doc.id_documento} 
-                    onClick={() => setDocViewer(`http://localhost:8000/uploads/${encodeURIComponent(doc.nombre_archivo)}`)}
+                    onClick={() => setDocViewer(`${API_URL}/uploads/${encodeURIComponent(doc.nombre_archivo)}`)}
                     className="w-full flex items-center justify-between bg-black/30 p-3 mb-2 rounded-lg border border-legal-border hover:border-gold-primary/30 cursor-pointer transition-colors group text-left"
                   >
                     <span className="text-sm text-neutral-300 truncate w-3/4 group-hover:text-white">{doc.nombre_archivo}</span>

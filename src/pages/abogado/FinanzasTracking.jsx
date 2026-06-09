@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, Clock, Plus, Save, Activity, Briefcase } from 'lucide-react';
+import { API_URL } from '../../config';
 
 export default function FinanzasTracking() {
   const [horas, setHoras] = useState([]);
@@ -8,7 +9,7 @@ export default function FinanzasTracking() {
   const [nuevaHora, setNuevaHora] = useState({ cantidad: '', descripcion: '' });
 
   const fetchHoras = () => {
-    fetch('http://localhost:8000/api/finanzas/horas/1')
+    fetch(`${API_URL}/api/finanzas/horas/1`)
       .then(res => res.json())
       .then(data => {
         setHoras(data);
@@ -29,7 +30,7 @@ export default function FinanzasTracking() {
     if(!nuevaHora.cantidad || !nuevaHora.descripcion) return;
 
     try {
-      await fetch('http://localhost:8000/api/finanzas/horas', {
+      await fetch(`${API_URL}/api/finanzas/horas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

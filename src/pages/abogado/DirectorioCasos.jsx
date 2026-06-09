@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search, Filter, FolderOpen, MoreVertical, Plus, Briefcase, Clock, CheckCircle2, FileText, ChevronRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../config';
 
 export default function DirectorioCasos() {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ export default function DirectorioCasos() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/casos')
+    fetch(`${API_URL}/api/casos`)
       .then(res => res.json())
       .then(data => {
         setCasos(data);
