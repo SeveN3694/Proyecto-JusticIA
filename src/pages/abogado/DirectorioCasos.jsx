@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Search, Filter, FolderOpen, MoreVertical, Plus, Briefcase, Clock, CheckCircle2, FileText, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Search, Filter, FolderOpen, MoreVertical, Plus, Briefcase, Clock, CheckCircle2, FileText, ChevronRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const MOCK_CASOS = [
-  { id: 'EXP-2024-001', titulo: 'Divorcio por Causal', cliente: 'Juan Pérez', materia: 'Familia', estado: 'Abierto', fecha: '12/05/2024', avance: 15 },
-  { id: 'EXP-2024-002', titulo: 'Indemnización por Accidente', cliente: 'María Gómez', materia: 'Civil', estado: 'En Trámite', fecha: '01/06/2024', avance: 60 },
-  { id: 'EXP-2024-003', titulo: 'Despido Arbitrario', cliente: 'Carlos Ruiz', materia: 'Laboral', estado: 'Cerrado', fecha: '15/03/2024', avance: 100 },
-  { id: 'EXP-2024-004', titulo: 'Incumplimiento de Contrato', cliente: 'Constructora Alfa', materia: 'Comercial', estado: 'En Trámite', fecha: '28/05/2024', avance: 45 },
-  { id: 'EXP-2024-005', titulo: 'Sucesión Intestada', cliente: 'Familia Torres', materia: 'Civil', estado: 'Abierto', fecha: '05/06/2024', avance: 5 },
-];
 
 export default function DirectorioCasos() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [casos, setCasos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/casos')
+      .then(res => res.json())
+      .then(data => {
+        setCasos(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error al obtener casos:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredCasos = casos.filter(caso => 
+    caso.titulo_caso.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    caso.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    caso.id_caso.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="h-full flex flex-col animate-in fade-in duration-700 bg-black text-neutral-200 font-sans">
@@ -54,7 +67,7 @@ export default function DirectorioCasos() {
                </div>
                <div>
                  <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mb-1">Total Activos</p>
-                 <p className="text-3xl font-extrabold text-white">124</p>
+                 <p className="text-3xl font-extrabold text-white">{casos.length}</p>
                </div>
             </div>
             <div className="bg-gradient-to-br from-[#111] to-[#050505] border border-white/5 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl group hover:border-gold-primary/30 transition-colors">
@@ -63,7 +76,7 @@ export default function DirectorioCasos() {
                </div>
                <div>
                  <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mb-1">En Trámite</p>
-                 <p className="text-3xl font-extrabold text-white">89</p>
+                 <p className="text-3xl font-extrabold text-white">{casos.filter(c => c.estado === 'Evaluación' || c.estado === 'En Trámite').length}</p>
                </div>
             </div>
             <div className="bg-gradient-to-br from-[#111] to-[#050505] border border-white/5 rounded-[2rem] p-6 flex items-center gap-6 shadow-xl group hover:border-gold-primary/30 transition-colors">
@@ -72,7 +85,7 @@ export default function DirectorioCasos() {
                </div>
                <div>
                  <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mb-1">Resueltos (Mes)</p>
-                 <p className="text-3xl font-extrabold text-white">12</p>
+                 <p className="text-3xl font-extrabold text-white">{casos.filter(c => c.estado === 'Completado' || c.estado === 'Resuelto').length}</p>
                </div>
             </div>
           </div>
@@ -114,10 +127,23 @@ export default function DirectorioCasos() {
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {MOCK_CASOS.map((caso, i) => (
-                    <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group cursor-pointer">
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-neutral-500">
+                        <Loader2 className="w-8 h-8 animate-spin mx-auto text-gold-primary mb-4" />
+                        Cargando expedientes desde Neon DB...
+                      </td>
+                    </tr>
+                  ) : filteredCasos.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-neutral-500">
+                        No se encontraron expedientes.
+                      </td>
+                    </tr>
+                  ) : filteredCasos.map((caso, i) => (
+                    <tr key={caso.id_real || i} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group cursor-pointer">
                       <td className="p-6">
-                        <span className="font-extrabold text-gold-primary tracking-wider">{caso.id}</span>
+                        <span className="font-extrabold text-gold-primary tracking-wider">{caso.id_caso}</span>
                       </td>
                       <td className="p-6">
                         <div className="flex items-center gap-3">
@@ -125,8 +151,8 @@ export default function DirectorioCasos() {
                             <FileText className="w-5 h-5 text-neutral-400 group-hover:text-gold-primary transition-colors" />
                           </div>
                           <div>
-                            <p className="font-bold text-white group-hover:text-gold-primary transition-colors">{caso.titulo}</p>
-                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mt-0.5">{caso.fecha}</p>
+                            <p className="font-bold text-white group-hover:text-gold-primary transition-colors">{caso.titulo_caso}</p>
+                            <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold mt-0.5">{caso.fecha_apertura}</p>
                           </div>
                         </div>
                       </td>
@@ -139,8 +165,8 @@ export default function DirectorioCasos() {
                       <td className="p-6">
                         <div className="flex items-center gap-2">
                           <div className="relative flex items-center justify-center">
-                            <div className={`absolute inset-0 rounded-full blur-[4px] animate-pulse ${caso.estado === 'Abierto' ? 'bg-emerald-500' : caso.estado === 'En Trámite' ? 'bg-yellow-500' : 'bg-red-500'}`} />
-                            <div className={`w-2 h-2 rounded-full relative z-10 ${caso.estado === 'Abierto' ? 'bg-emerald-400' : caso.estado === 'En Trámite' ? 'bg-yellow-400' : 'bg-red-400'}`} />
+                            <div className={`absolute inset-0 rounded-full blur-[4px] animate-pulse ${caso.estado === 'Abierto' ? 'bg-emerald-500' : caso.estado === 'Evaluación' || caso.estado === 'En Trámite' ? 'bg-yellow-500' : 'bg-red-500'}`} />
+                            <div className={`w-2 h-2 rounded-full relative z-10 ${caso.estado === 'Abierto' ? 'bg-emerald-400' : caso.estado === 'Evaluación' || caso.estado === 'En Trámite' ? 'bg-yellow-400' : 'bg-red-400'}`} />
                           </div>
                           <span className="text-neutral-300 font-bold text-xs">{caso.estado}</span>
                         </div>
@@ -161,7 +187,10 @@ export default function DirectorioCasos() {
                           <button className="p-2 hover:bg-white/10 rounded-xl text-neutral-400 transition-all">
                             <MoreVertical className="w-5 h-5" />
                           </button>
-                          <button className="p-2 bg-gold-primary/10 hover:bg-gold-primary text-gold-primary hover:text-black rounded-xl transition-all opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 shadow-lg">
+                          <button 
+                            onClick={() => navigate('/estrategia-legal')}
+                            className="p-2 bg-gold-primary/10 hover:bg-gold-primary text-gold-primary hover:text-black rounded-xl transition-all opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 shadow-lg"
+                          >
                             <ChevronRight className="w-5 h-5" />
                           </button>
                         </div>

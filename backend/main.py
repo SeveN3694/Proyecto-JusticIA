@@ -87,6 +87,11 @@ class ChatCliente(BaseModel):
     id_caso: int
     id_cliente: int
 
+class FasesRequest(BaseModel):
+    descripcion: str
+    estado: str
+    eventos: list
+
 @app.get("/")
 def read_root():
     return {"status": "ok", "message": "API de JusticIA en línea"}
@@ -256,6 +261,46 @@ async def chat_cliente(consulta: ChatCliente):
         print(f"Error en chat cliente: {e}")
         raise HTTPException(status_code=500, detail="No se pudo procesar la consulta")
 
+@app.post("/api/ia/fases")
+async def generar_fases_caso(consulta: FasesRequest):
+    """
+    Genera dinámicamente las fases generales del proceso legal usando IA.
+    """
+    try:
+        modelo = valorador.modelo
+        prompt = f"""
+        Actúa como un arquitecto de procesos legales.
+        Basado en el siguiente caso, genera una línea de tiempo general de 5 fases principales (ej: Evaluación, Estrategia, etc) que tendrá este tipo de proceso legal específico.
+        Luego, determina en qué fase (índice del 0 al 4) se encuentra actualmente el caso.
+        
+        HECHOS DEL CASO: {consulta.descripcion}
+        ESTADO ACTUAL: {consulta.estado}
+        EVENTOS CALENDARIO ACTUALES: {consulta.eventos}
+        
+        Devuelve SOLO un JSON válido con este formato:
+        {{
+            "fases": ["Fase 1", "Fase 2", "Fase 3", "Fase 4", "Fase 5"],
+            "fase_actual_index": 0
+        }}
+        """
+        response = modelo.generate_content(prompt)
+        import json
+        texto = response.text.strip()
+        if texto.startswith("```json"):
+            texto = texto[7:-3]
+        elif texto.startswith("```"):
+            texto = texto[3:-3]
+            
+        data = json.loads(texto)
+        return data
+    except Exception as e:
+        print(f"Error generando fases IA: {e}")
+        # Fallback elegante
+        return {
+            "fases": ["Evaluación y Análisis", "Desarrollo de Estrategia", "Presentación Oficial", "Fase Probatoria", "Resolución Final"],
+            "fase_actual_index": 0
+        }
+
 @app.get("/api/documentos")
 async def listar_documentos():
     """Retorna los documentos adjuntos de la base de datos."""
@@ -276,4 +321,40 @@ async def listar_documentos():
         return docs
     except Exception as e:
         print(f"Error listando documentos: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/casos")
+async def listar_casos():
+    """Retorna todos los expedientes/casos de la base de datos."""
+    try:
+        db_url = limpiar_db_url(os.getenv("NEON_DATABASE_URL"))
+        conn = psycopg.connect(db_url)
+        cursor = conn.cursor()
+        
+        # Unir caso_legal con cliente
+        query = """
+        SELECT c.id_caso, c.titulo_caso, c.estado, c.fecha_apertura, cl.nombre_razon_social, c.descripcion_hechos 
+        FROM caso_legal c
+        JOIN cliente cl ON c.id_cliente = cl.id_cliente
+        ORDER BY c.id_caso DESC;
+        """
+        cursor.execute(query)
+        casos = []
+        for row in cursor.fetchall():
+            casos.append({
+                "id_caso": f"EXP-2024-{row[0]:03d}",
+                "id_real": row[0],
+                "titulo_caso": row[1],
+                "estado": row[2] if row[2] else "Evaluación",
+                "fecha_apertura": row[3].strftime("%d/%m/%Y") if row[3] else "Reciente",
+                "cliente": row[4],
+                "descripcion": row[5],
+                "materia": "Indefinida", # Se podría calcular con IA o agregar columna
+                "avance": 10 # Porcentaje estático para empezar
+            })
+        cursor.close()
+        conn.close()
+        return casos
+    except Exception as e:
+        print(f"Error listando casos: {e}")
         raise HTTPException(status_code=500, detail=str(e))

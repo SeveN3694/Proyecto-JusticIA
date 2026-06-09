@@ -13,6 +13,9 @@ export default function PortalCliente() {
   const [eventos, setEventos] = useState([]);
   const [documentos, setDocumentos] = useState([]);
   const [docViewer, setDocViewer] = useState(null);
+  const [casoActual, setCasoActual] = useState(null);
+  const [fasesIA, setFasesIA] = useState(null);
+  const [loadingFases, setLoadingFases] = useState(true);
 
   React.useEffect(() => {
     fetch('http://localhost:8000/api/calendario/1')
@@ -28,7 +31,40 @@ export default function PortalCliente() {
         setDocumentos(docsCliente);
       })
       .catch(err => console.error("Error cargando documentos:", err));
+
+    fetch('http://localhost:8000/api/casos')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setCasoActual(data[0]); // Mostrar el caso más reciente
+        }
+      })
+      .catch(err => console.error("Error cargando caso:", err));
   }, []);
+
+  React.useEffect(() => {
+    if (casoActual) {
+      setLoadingFases(true);
+      fetch('http://localhost:8000/api/ia/fases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          descripcion: casoActual.descripcion,
+          estado: casoActual.estado,
+          eventos: eventos.map(e => `${e.fecha_evento} - ${e.titulo_evento} (${e.estado})`)
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        setFasesIA(data);
+        setLoadingFases(false);
+      })
+      .catch(err => {
+        console.error("Error cargando fases IA:", err);
+        setLoadingFases(false);
+      });
+    }
+  }, [casoActual, eventos]);
 
   const enviarConsulta = async () => {
     if (!mensaje.trim()) return;
@@ -105,50 +141,69 @@ export default function PortalCliente() {
               {/* Línea de progreso (oro) */}
               <div className="absolute left-4 top-1/2 -translate-y-1/2 h-[2px] w-[50%] bg-gold-primary/50 z-0"></div>
               
-              {/* Pasos */}
-              {[
-                { titulo_evento: 'Presentación de Demanda', estado: 'Completado', fecha_evento: '12 May' },
-                { titulo_evento: 'Recolección de Pruebas', estado: 'Pendiente', fecha_evento: 'Activo' },
-                { titulo_evento: 'Conciliación / Audiencia', estado: 'Pendiente', fecha_evento: 'Por definir' },
-                { titulo_evento: 'Sentencia / Resolución', estado: 'Pendiente', fecha_evento: 'Por definir' }
-              ].map((evt, idx) => {
-                const isCompleted = evt.estado === 'Completado';
-                const isActive = evt.estado === 'Pendiente' && idx === 1; // Hacer el paso 2 activo
-                return (
-                  <div key={idx} className="relative z-10 flex flex-col items-center gap-3 w-32 text-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                      isCompleted ? 'bg-gold-primary border-gold-primary text-black shadow-[0_0_15px_rgba(212,175,55,0.4)]' :
-                      isActive ? 'bg-legal-dark border-gold-primary text-gold-primary shadow-[0_0_15px_rgba(212,175,55,0.2)]' :
-                      'bg-legal-dark border-neutral-700 text-neutral-700'
-                    }`}>
-                      {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : isActive ? <CircleDot className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+              {/* Pasos dinámicos IA */}
+              {loadingFases || !fasesIA ? (
+                <div className="relative z-10 w-full text-center py-6 flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="w-6 h-6 animate-spin text-gold-primary" />
+                  <span className="text-xs text-neutral-500 font-medium">JusticIA está mapeando el proceso legal óptimo de su expediente...</span>
+                </div>
+              ) : (
+                fasesIA.fases.map((fase, idx) => {
+                  const isCompleted = idx < fasesIA.fase_actual_index;
+                  const isActive = idx === fasesIA.fase_actual_index;
+
+                  return (
+                    <div key={idx} className="relative z-10 flex flex-col items-center gap-3 w-32 text-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                        isCompleted ? 'bg-gold-primary border-gold-primary text-black shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-100' :
+                        isActive ? 'bg-legal-dark border-gold-primary text-gold-primary shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-110' :
+                        'bg-legal-dark border-neutral-700 text-neutral-700 scale-90 opacity-50'
+                      }`}>
+                        {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : isActive ? <CircleDot className="w-5 h-5 animate-pulse" /> : <Circle className="w-4 h-4" />}
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className={`text-[10px] font-bold leading-tight mb-1 ${
+                          isCompleted || isActive ? 'text-neutral-300' : 'text-neutral-600'
+                        }`}>{fase}</span>
+                        {isActive && <span className="text-[9px] font-bold uppercase tracking-widest text-gold-primary animate-pulse">Fase Actual</span>}
+                      </div>
                     </div>
-                    <div className="flex flex-col items-center">
-                      <span className={`text-xs font-bold leading-tight mb-1 ${
-                        isCompleted || isActive ? 'text-neutral-300' : 'text-neutral-600'
-                      }`}>{evt.titulo_evento}</span>
-                      <span className={`text-[10px] font-medium ${isActive ? 'text-gold-primary animate-pulse' : 'text-neutral-500'}`}>{evt.fecha_evento}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
 
           <div className="bg-legal-panel border border-legal-border rounded-2xl p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <span className="text-xs font-bold text-gold-primary uppercase tracking-wider mb-1 block">Expediente EXP-2024-001</span>
-                <h2 className="text-2xl font-bold text-white">Protección y Defensa al Consumidor</h2>
+                <span className="text-xs font-bold text-gold-primary uppercase tracking-wider mb-1 block">
+                  Expediente {casoActual ? casoActual.id_caso : 'Cargando...'}
+                </span>
+                <h2 className="text-2xl font-bold text-white">
+                  {casoActual ? casoActual.titulo_caso : 'Cargando expediente...'}
+                </h2>
               </div>
-              <span className="bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-medium">
-                En Trámite
+              <span className={`bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-medium ${casoActual?.estado === 'Evaluación' ? 'text-yellow-400 border-yellow-500/20 bg-yellow-500/10' : ''}`}>
+                {casoActual ? casoActual.estado : 'En Trámite'}
               </span>
             </div>
             
-            <p className="text-neutral-400 text-sm leading-relaxed mb-6">
-              Su caso se encuentra actualmente en la fase de recolección de pruebas. Nuestro equipo legal ha presentado el escrito inicial y estamos a la espera de la notificación al juzgado correspondiente. La IA sugiere que hay una alta probabilidad de resolución en los próximos 3 meses.
-            </p>
+            <div className="text-neutral-400 text-sm leading-relaxed mb-6">
+              {casoActual ? (
+                <div className="space-y-4">
+                  <p>Su caso ha sido ingresado exitosamente en nuestra plataforma. A continuación le presentamos el resumen de los hechos que obran en su expediente:</p>
+                  <div className="bg-black/30 p-4 rounded-xl border border-white/5 font-light italic">
+                    "{casoActual.descripcion}"
+                  </div>
+                  <p>Nuestro equipo legal y el sistema JusticIA están evaluando la viabilidad y procesando la documentación para emitir la estrategia. La IA sugiere que mantenga este portal abierto para actualizaciones en tiempo real.</p>
+                </div>
+              ) : (
+                <p className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-gold-primary" /> Cargando detalles del expediente...
+                </p>
+              )}
+            </div>
 
             <div className="border-t border-legal-border pt-6 mt-6">
               <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
@@ -156,14 +211,17 @@ export default function PortalCliente() {
                 Línea de Tiempo Reciente
               </h3>
               <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="w-10 text-xs text-neutral-500 font-medium">12 May</div>
-                  <div className="flex-1 text-sm text-neutral-300">Presentación de demanda inicial en juzgado de familia.</div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-10 text-xs text-neutral-500 font-medium">05 May</div>
-                  <div className="flex-1 text-sm text-neutral-300">Firma de poderes y validación de estrategia legal con IA.</div>
-                </div>
+                {eventos.length === 0 ? (
+                  <div className="text-xs text-neutral-500 italic px-2">Aún no hay actividad reciente registrada en el expediente.</div>
+                ) : (
+                  // Tomar los últimos 3 eventos agregados o completados
+                  eventos.slice(-3).reverse().map((evt, idx) => (
+                    <div key={idx} className="flex gap-4 items-center">
+                      <div className="w-16 text-[10px] text-neutral-500 font-medium uppercase tracking-wider">{evt.fecha_evento}</div>
+                      <div className="flex-1 text-sm text-neutral-300 border-l border-white/5 pl-4">{evt.titulo_evento} <span className="text-xs text-gold-primary opacity-50 ml-2">({evt.estado})</span></div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
