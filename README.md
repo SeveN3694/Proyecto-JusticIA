@@ -10,6 +10,9 @@
 </p>
 
 <p align="center">
+  <a href="https://proyecto-justic-ia.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/🌐_Acceder_a_la_Plataforma_JusticIA-10B981?style=for-the-badge&logo=vercel" alt="Acceder a la Plataforma JusticIA">
+  </a>
   <a href="demostracion.md">
     <img src="https://img.shields.io/badge/🎬_Demostración_Funcional_Paso_a_Paso-FF0000?style=for-the-badge" alt="Demostración Funcional">
   </a>

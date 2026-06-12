@@ -28,6 +28,9 @@ Al ingresar como Abogado o Socio, el sistema despliega un *Dashboard* integral q
 
 La creación de un nuevo caso inicia en la interfaz de ingresos, pero la verdadera magia ocurre en segundo plano gracias a nuestra automatización.
 
+> **Dato de Prueba (Sumilla):** Copia y pega este texto para probar el ingreso:
+> *"Reclamo formal por negativa injustificada de cobertura de garantía automotriz ante fallas severas de motor a los dos meses de compra. El cliente exige el cambio inmediato del vehículo por uno nuevo o la devolución íntegra del dinero ($25,000 USD) sustentándose en la falta de idoneidad del producto y el riesgo a su integridad física."*
+
 ![Ingreso de Caso](src/assets/demostracion/input_caso.png)
 *Formulario estructurado para la recepción inicial de los hechos y la documentación del cliente.*
 
@@ -88,6 +91,9 @@ Antes de trazar una estrategia, JusticIA realiza una **Búsqueda Vectorial** par
 
 Este es el núcleo de valor (Core Business) de JusticIA. Mediante una vista inmersiva *Split-Screen* (pantalla dividida), el sistema inyecta los hechos del cliente y la jurisprudencia encontrada directamente en el prompt del LLM (Gemini 1.5).
 
+> **TEXTO PARA COPIAR (Hechos del Caso):**
+> *El cliente adquirió un vehículo del año 2023 en el concesionario automotriz. A los dos meses de uso, el motor presentó fallas severas, apagándose en plena carretera y poniendo en riesgo su vida. El concesionario se niega a aplicar la garantía argumentando "mal uso por parte del usuario", pero se han negado a emitir y entregar un informe técnico concluyente. El cliente solicita la devolución total de su dinero o el cambio por un vehículo nuevo basándose en la idoneidad del producto bajo las normas del Código de Protección y Defensa del Consumidor.*
+
 ![Estrategia Legal Generada](src/assets/demostracion/estrategia_legal_generada.png)
 *El motor RAG analiza el caso, evita alucinaciones al basarse solo en tu jurisprudencia, emite una estrategia estructurada y calcula el Porcentaje de Viabilidad Matemática de éxito.*
 
@@ -122,6 +128,14 @@ Finalmente, JusticIA otorga a los clientes un acceso restringido (Portal del Cli
 
 ![Portal del Cliente](src/assets/demostracion/portal_cliente.png)
 *La Extranet del cliente donde puede observar de manera visual el avance de su expediente legal.*
+
+> **Preguntas de Prueba para la IA:**
+> 
+> **PREGUNTA 1:** 
+> *Hola, ¿me pueden explicar en términos simples en qué consiste el principio de idoneidad que está en mi reclamo?*
+> 
+> **PREGUNTA 2:** 
+> *¿Qué pasa si el concesionario no se presenta a la audiencia de conciliación programada?*
 
 ![Chat IA 24/7](src/assets/demostracion/chat_ia.png)
 *Chatbot legal integrado mediante la API de Gemini que resuelve dudas jurídicas básicas del cliente en tiempo real.*
