@@ -1,93 +1,134 @@
-# Guía de Prueba: Simulación de un Caso Real en JusticIA
-**Caso de Prueba:** Protección y Defensa al Consumidor (Garantía Vehicular)
+# ⚖️ JusticIA: Demostración Funcional de la Plataforma
 
-Bienvenido. Este documento contiene el recorrido interactivo (Walkthrough) paso a paso para que usted mismo pueda probar y evaluar la plataforma JusticIA en todo su esplendor, experimentando los diferentes perfiles del sistema.
+Bienvenido a la demostración oficial de **JusticIA**. Este documento expone el flujo de trabajo real del sistema, detallando paso a paso cómo la Inteligencia Artificial se integra de manera orgánica en el ciclo de vida de un caso legal: desde que el cliente presenta su problema hasta la formulación de la estrategia de defensa y facturación.
 
----
-
-## FASE 1: Automatización y Apertura (n8n, NeonDB y Drive)
-*Esta fase demuestra la agilidad del ingreso de casos y cómo el sistema se conecta con herramientas externas.*
-
-1. **Contexto:** JusticIA no obliga a los abogados a cambiar sus costumbres; pueden usar la plataforma web o simplemente enviar los documentos vía Telegram y el sistema se encarga del resto.
-2. **Acción (Formulario de Input):** Diríjase a la pantalla de **"Input del Caso Legal"**.
-3. **Ingreso de Datos Reales:** Llena el formulario con los siguientes datos del caso de prueba para que la IA tenga contexto:
-   - **Nombre de Cliente:** Juan Pérez
-   - **Domicilio:** Av. Javier Prado Este 1234
-   - **Distrito/Provincia:** San Borja, Lima
-   - **Sumilla (Copia y pega este texto exacto):** 
-     > *"Reclamo formal por negativa injustificada de cobertura de garantía automotriz ante fallas severas de motor a los dos meses de compra. El cliente exige el cambio inmediato del vehículo por uno nuevo o la devolución íntegra del dinero ($25,000 USD) sustentándose en la falta de idoneidad del producto y el riesgo a su integridad física."*
-4. **Carga de Documento de Prueba:** Haga clic en el botón de adjuntar archivo y seleccione el archivo de prueba: `Carta_Notarial_Juan_Perez.pdf`. *(Nota: Se ha preparado este documento como base fáctica).*
-5. **Sincronización (n8n):** Haga clic en "Enviar Caso". Cuando aparezca la notificación verde en pantalla, tenga en cuenta que en ese mismo segundo ocurrió lo siguiente en segundo plano:
-   - El PDF original se guardó en la carpeta del caso en **Google Drive** corporativo.
-   - Se registró el perfil del cliente en la base de datos estructurada **Neon DB**.
-   - El motor vectorizó el PDF usando **Gemini** para prepararlo para la IA.
+A continuación, exploraremos las distintas fases que componen nuestra arquitectura *LegalTech Enterprise*.
 
 ---
 
-## FASE 2: Ingesta de Conocimiento (Centro de Indexación)
-*Evalúe cómo el sistema "aprende" y se nutre de normativas específicas.*
+## 🔒 Fase 1: Control de Acceso y Enrutamiento Inteligente
 
-1. **Ingreso:** Entra al sistema usando el rol **Admin/Auxiliar**.
-2. **Acción:** Diríjase a la sección **"Centro de Indexación"** (Digitalización).
-3. **Carga:** Suba el archivo `0 Código Protección y Defensa Consumidor.pdf`.
-4. **Qué sucede aquí:** En esta etapa, el sistema no está simplemente subiendo un PDF a la nube. JusticIA está extrayendo el texto, dividiéndolo en fragmentos lógicos (chunks) y convirtiéndolos en vectores matemáticos usando Gemini y Neon DB. De esta forma, el sistema "aprende" y "entiende" la nueva norma.
+El sistema cuenta con un control de acceso basado en roles (Abogado, Cliente, Auxiliar/Admin) que redirige al usuario hacia vistas personalizadas según sus permisos, protegiendo así la confidencialidad de la información.
 
----
-
-## FASE 3: La Magia de la IA (Estrategia Legal)
-*Compruebe el poder del motor RAG analizando un caso real en segundos.*
-
-1. **Ingreso:** Inicie sesión con el rol **Abogado**.
-2. **Acción:** Vaya a la pestaña **"JusticIA IA"** en la barra lateral.
-3. **Prueba:** En el cuadro de "Hechos del Caso", copie y pegue este texto exacto:
-
-> **TEXTO PARA COPIAR:**
-> El cliente adquirió un vehículo del año 2023 en el concesionario automotriz. A los dos meses de uso, el motor presentó fallas severas, apagándose en plena carretera y poniendo en riesgo su vida. El concesionario se niega a aplicar la garantía argumentando "mal uso por parte del usuario", pero se han negado a emitir y entregar un informe técnico concluyente. El cliente solicita la devolución total de su dinero o el cambio por un vehículo nuevo basándose en la idoneidad del producto bajo las normas del Código de Protección y Defensa del Consumidor.
-
-4. **Acción:** Haga clic en **"Generar Estrategia"**.
-5. **Puntos Clave a Observar:**
-   - Visualice el **Porcentaje de Viabilidad** matemático calculado por la IA.
-   - Desplácese hacia abajo para revisar cómo el LLM cruzó la información con el PDF subido previamente (su base jurisprudencial).
-   - **Gestión Inteligente:** Vaya a la sección *"Hitos Procesales Sugeridos para Calendario"* y haga clic en **"Añadir a Agenda"** en al menos dos de las recomendaciones emitidas por la IA.
+![Login de JusticIA](src/assets/demostracion/login.png)
+*Vista de autenticación segura donde el sistema asigna el entorno de trabajo según el perfil.*
 
 ---
 
-## FASE 4: Operatividad del Despacho (Calendario y Finanzas)
-*Evalúe cómo el sistema trasciende el concepto de Chatbot para convertirse en un ERP que gestiona el negocio.*
+## 📊 Fase 2: El Centro de Mando del Abogado
 
-1. **Acción:** Vaya a **"Agenda y Calendario"** en el panel izquierdo.
-2. **Prueba:** Observe cómo los hitos sugeridos por la IA ya están debidamente programados en la línea de tiempo.
-3. **Prueba:** Haga clic en **"Nuevo Hito"**. 
-   - Título: *Audiencia de Conciliación INDECOPI*
-   - Fecha: *(Coloque una fecha de la próxima semana)*
-4. **Prueba:** Haga clic en **"Marcar Completado"** en el primer hito de la lista para simular el avance procesal.
-5. **Acción:** Vaya a **"Finanzas y Horas"**.
-6. **Prueba:** Registre un nuevo tiempo:
-   - Cantidad de horas: `2.5`
-   - Descripción de la tarea: `Redacción de reclamo ante INDECOPI y validación de estrategia con IA JusticIA.`
-7. **Detalle Clave:** Haga clic en "Guardar Tiempo" y observe cómo el "Monto Facturable Est." se actualiza en **Soles (PEN)** automáticamente, monetizando el trabajo legal.
+Al ingresar como Abogado o Socio, el sistema despliega un *Dashboard* integral que centraliza las operaciones del día a día, ofreciendo una vista panorámica del rendimiento del bufete y los plazos inminentes.
+
+![Dashboard del Abogado](src/assets/demostracion/dashboard.png)
+*Panel de control (Dashboard) que consolida métricas clave, tareas pendientes y alertas procesales.*
 
 ---
 
-## FASE 5: Transparencia y Autogestión (Portal Cliente)
-*Compruebe cómo JusticIA otorga valor agregado y tranquilidad al cliente final.*
+## 📥 Fase 3: Recepción y Automatización del Caso
 
-1. **Ingreso:** Cierre sesión y entre usando el rol **Cliente**.
-2. **Visualizar el Cronograma:** Observe la línea de tiempo en el centro de la pantalla. 
-   - **El Impacto:** El cliente ya no necesita llamar ansioso al despacho; ingresa a su portal y ve exactamente la misma línea de tiempo actualizada que maneja el abogado (hitos completados y pendientes).
-3. **Prueba (Chat IA):** Haga clic en el globo de chat (esquina inferior derecha) para abrir el **Asistente JusticIA**.
-4. Copie y pegue estas preguntas una por una:
+La creación de un nuevo caso inicia en la interfaz de ingresos, pero la verdadera magia ocurre en segundo plano gracias a nuestra automatización.
 
-> **PREGUNTA 1:** 
-> Hola, ¿me pueden explicar en términos simples en qué consiste el principio de idoneidad que está en mi reclamo?
+![Ingreso de Caso](src/assets/demostracion/input_caso.png)
+*Formulario estructurado para la recepción inicial de los hechos y la documentación del cliente.*
 
-> **PREGUNTA 2:** 
-> ¿Qué pasa si el concesionario no se presenta a la audiencia de conciliación programada?
+Una vez enviado, el flujo de trabajo automatizado **(n8n)** toma el control para sincronizar y organizar la información de manera transparente y eficiente.
 
-5. **Comprobar la IA:** Observe cómo el asistente responde de manera clara, educada y basándose estrictamente en la legalidad peruana.
+![Automatización n8n](src/assets/demostracion/n8n.png)
+*El pipeline automatizado distribuye la carga entre la base de datos estructurada y el almacenamiento en la nube.*
+
+Simultáneamente, los documentos adjuntos son respaldados de forma segura en **Google Drive**, clasificándolos bajo una arquitectura corporativa lógica que imita el orden de un bufete físico.
+
+![Repositorio en Google Drive](src/assets/demostracion/drive_repositorio.png)
+*Estructura principal del repositorio corporativo gestionado automáticamente.*
+
+![Carpetas del Consumidor](src/assets/demostracion/drive_consumidor.png)
+*Organización interna de un expediente de protección al consumidor, con los documentos base extraídos.*
 
 ---
 
-### Notas para el Evaluador
-- **Tiempos de Respuesta (RAG):** El cruce semántico y la generación de estrategia pueden tomar entre 5 a 15 segundos dependiendo de las cuotas de red de Gemini API. En ese breve lapso, el sistema está realizando un trabajo de análisis de datos que a un humano le tomaría horas.
-- **Entorno de Desarrollo:** Al ejecutarse de forma local usando React Vite en modo `dev`, si alguna pantalla sufre desincronización de estado local, una simple recarga rápida (`F5`) restaura el flujo original.
+## 🧠 Fase 4: Digitalización y Construcción del "Cerebro" (RAG)
+
+JusticIA no se basa en leyes genéricas de internet, sino en la "base documental" ("doc base") del propio despacho. Esta base alberga códigos, sentencias previas y jurisprudencia.
+
+![Base Documental (doc base)](src/assets/demostracion/drive_doc_base.png)
+*Archivos PDF de doctrina y jurisprudencia que nutren el modelo.*
+
+Para que el modelo (Gemini) entienda estos documentos, el Auxiliar utiliza el **Centro de Indexación**. Aquí se suben resoluciones y leyes que el sistema extrae, segmenta y vectoriza usando embeddings.
+
+![Centro de Digitalización](src/assets/demostracion/ingesta_conocimiento.png)
+*Interfaz Drag & Drop para subir leyes, normas y resoluciones a la base de vectores.*
+
+![Ingesta Exitosa](src/assets/demostracion/ingesta_exitosa.png)
+*El sistema confirma la vectorización en la base de datos Neon, logrando que el "cerebro" entienda y almacene la norma.*
+
+---
+
+## 🗂️ Fase 5: Gestión y Directorio de Casos
+
+Con el conocimiento indexado y el caso ingresado, el abogado puede administrar todos los expedientes del bufete desde el directorio centralizado tipo CRM.
+
+![Directorio de Casos](src/assets/demostracion/directorio.png)
+*Listado inteligente de casos legales que permite una visión general del estado y materia de los mismos.*
+
+---
+
+## 🔍 Fase 6: Búsqueda Semántica de Jurisprudencia
+
+Antes de trazar una estrategia, JusticIA realiza una **Búsqueda Vectorial** para hallar casos y leyes matemáticamente similares a los hechos presentados por el cliente.
+
+![Jurisprudencia Encontrada](src/assets/demostracion/jurisprudencia.png)
+*El motor RAG recupera los fragmentos exactos de los documentos que sustentarán la defensa.*
+
+![Detalle de Base Jurisprudencial](src/assets/demostracion/base_jurisprudencial.png)
+*Análisis de la similitud del coseno mostrando la relevancia de las resoluciones indexadas con respecto al caso actual.*
+
+---
+
+## 🤖 Fase 7: Estrategia Legal Impulsada por Inteligencia Artificial
+
+Este es el núcleo de valor (Core Business) de JusticIA. Mediante una vista inmersiva *Split-Screen* (pantalla dividida), el sistema inyecta los hechos del cliente y la jurisprudencia encontrada directamente en el prompt del LLM (Gemini 1.5).
+
+![Estrategia Legal Generada](src/assets/demostracion/estrategia_legal_generada.png)
+*El motor RAG analiza el caso, evita alucinaciones al basarse solo en tu jurisprudencia, emite una estrategia estructurada y calcula el Porcentaje de Viabilidad Matemática de éxito.*
+
+Para conectar la mente legal con las operaciones del bufete, la Inteligencia Artificial sugiere directamente los **Hitos Procesales** recomendados a seguir.
+
+![Hitos Procesales Generados](src/assets/demostracion/hitos_procesales.png)
+*La IA programa las actuaciones legales futuras para ser añadidas a la agenda procesal con un solo clic.*
+
+---
+
+## 📅 Fase 8: Operatividad y Control de Plazos (Agenda)
+
+Los hitos sugeridos por la IA o creados manualmente se reflejan en una **Línea de Tiempo Procesal** clara. Los abogados nunca perderán un plazo perentorio gracias a este calendario centralizado.
+
+![Agenda y Calendario](src/assets/demostracion/agenda_calendario.png)
+*Gestión de la agenda, mostrando audiencias, apelaciones y reuniones con alertas preventivas.*
+
+---
+
+## 💰 Fase 9: Monetización y Time Tracking
+
+Un bufete eficiente necesita facturar correctamente cada minuto trabajado. El módulo de Finanzas permite registrar las horas invertidas de forma rápida y asociarlas a los casos correspondientes.
+
+![Finanzas y Time Tracking](src/assets/demostracion/finanzas_horas.png)
+*Registro de horas facturables que actualiza dinámicamente los honorarios en Soles (PEN).*
+
+---
+
+## 🌟 Fase 10: Transparencia Total con el Cliente
+
+Finalmente, JusticIA otorga a los clientes un acceso restringido (Portal del Cliente) para que sientan el avance de su caso. Pueden ver su cronograma actualizado y, para reducir llamadas innecesarias al despacho, cuentan con un asistente virtual activo 24/7.
+
+![Portal del Cliente](src/assets/demostracion/portal_cliente.png)
+*La Extranet del cliente donde puede observar de manera visual el avance de su expediente legal.*
+
+![Chat IA 24/7](src/assets/demostracion/chat_ia.png)
+*Chatbot legal integrado mediante la API de Gemini que resuelve dudas jurídicas básicas del cliente en tiempo real.*
+
+---
+
+<p align="center">
+  <b>JusticIA ⚖️</b> <br>
+  <i>Transformando la incertidumbre del papel en estrategias precisas con Inteligencia Artificial.</i>
+</p>
