@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="demostracion.md">
-    <img src="https://img.shields.io/badge/🎬_Simulación_Interactiva_Paso_a_Paso-FF0000?style=for-the-badge" alt="Simulación Interactiva">
+    <img src="https://img.shields.io/badge/🎬_Demostración_Funcional_Paso_a_Paso-FF0000?style=for-the-badge" alt="Demostración Funcional">
   </a>
 </p>
 
@@ -150,65 +150,6 @@ justicia-frontend/
 ├── package.json             # Dependencias del Frontend
 └── tailwind.config.js       # Configuración global de colores, tipografía y diseño
 ```
-
----
-
-## 🚀 Guía de Despliegue en Local
-
-Para ejecutar el proyecto de forma local, necesitarás iniciar dos servidores en paralelo: el Backend (FastAPI) y el Frontend (React Vite).
-
-### Prerrequisitos
-- **Node.js** (v18 o superior)
-- **Python** (v3.10 o superior)
-- **Git**
-
-### 1. Configuración del Backend (Motor IA y API Python)
-
-1. Abre tu terminal y navega a la carpeta del backend:
-   ```bash
-   cd backend
-   ```
-2. Crea y activa tu entorno virtual (obligatorio para aislar las librerías):
-   ```bash
-   python -m venv env
-   
-   # En Windows (si arroja error de scripts desactivados, ejecuta primero):
-   Set-ExecutionPolicy Unrestricted -Scope Process
-   env\Scripts\activate
-   
-   # En macOS/Linux:
-   source env/bin/activate
-   ```
-3. Instala las dependencias de Python necesarias:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. **Variables de Entorno (.env):**
-   Crea un archivo llamado `.env` dentro de la carpeta `backend/`. Este archivo debe contener tus claves secretas para la conexión a PostgreSQL (`DATABASE_URL`) y la API de IA (`GEMINI_API_KEY`). **Nunca compartas este archivo públicamente.**
-   
-5. Inicia el servidor de desarrollo de FastAPI:
-   ```bash
-   uvicorn main:app --reload
-   ```
-   > El motor de IA estará escuchando peticiones en `http://localhost:8000`. Puedes verificar los endpoints automáticos en `http://localhost:8000/docs`.
-
-### 2. Configuración del Frontend (Interfaz de React)
-
-1. Abre una **nueva pestaña** en tu terminal y asegúrate de estar en la **raíz del proyecto** (la carpeta principal, no en el backend).
-2. Instala los paquetes de Node:
-   ```bash
-   npm install
-   ```
-3. Inicia el empaquetador de desarrollo Vite:
-   ```bash
-   npm run dev
-   ```
-   > La aplicación web renderizará en tu navegador en `http://localhost:5173`.
-
-### 3. Simulador de Roles (Mock Login)
-- Accede a la URL local de React.
-- Escribe en el campo de "Usuario" el rol que deseas probar: `cliente`, `auxiliar`, `abogado` o `socio`. El sistema de rutas te redirigirá instantáneamente a los tableros especializados de cada perfil.
-- **Consejo de Presentación:** Muestra primero la perspectiva del Auxiliar cargando un documento, luego cambia al perfil del Abogado para generar la estrategia predictiva.
 
 ---
 
